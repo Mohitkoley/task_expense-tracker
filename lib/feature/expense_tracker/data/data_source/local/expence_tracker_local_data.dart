@@ -38,7 +38,7 @@ class ExpenseTrackerLocalDataSourceImpl implements ExpenseDataSource {
         return expenses;
       }
       for (int i = 0; i < box.length; i++) {
-        if (box.getAt(i).date == date && box.getAt(i).category == category) {
+        if (box.getAt(i).date == date || box.getAt(i).category == category) {
           expenses.add(box.getAt(i));
         }
       }

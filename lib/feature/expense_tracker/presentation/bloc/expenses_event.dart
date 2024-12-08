@@ -26,7 +26,10 @@ final class UpdateExpensesEvent extends ExpensesEvent {
 
 final class FilterExpensesEvent extends ExpensesEvent {
   final DateTime date;
-  final ExpenseCategory category;
+  ExpenseCategory category;
 
-  FilterExpensesEvent(this.date, this.category);
+  FilterExpensesEvent({
+    required this.date,
+    this.category = ExpenseCategory.food,
+  });
 }

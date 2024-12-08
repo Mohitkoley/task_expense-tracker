@@ -3,31 +3,37 @@ import 'dart:async';
 import 'package:bloc_test/core/usecase/usecase.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
+import 'package:bloc_test/feature/expense_tracker/domain/usecase/add_expenses.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/usecase/delete_expense.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/usecase/filter_expenses.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/usecase/get_all_expenses.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/usecase/update_expenses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'expenses_event.dart';
 part 'expenses_state.dart';
 
-class AssesmentBloc extends Bloc<ExpensesEvent, ExpensesState> {
-  AssesmentBloc({
-    required GetAllExpenses getAllCategory,
+@named
+@LazySingleton()
+class ExpensesBloc extends Bloc<ExpensesEvent, ExpensesState> {
+  ExpensesBloc({
+    required AddExpenses addExpenses,
     required GetAllExpenses getAllExpenses,
     required UpdateExpenses updateExpenses,
     required DeleteExpense deleteExpense,
     required FilterExpenses filterExpenses,
-  })  : _getExpenses = getAllCategory,
+  })  : _getExpenses = getAllExpenses,
         _updateExpenses = updateExpenses,
         _deleteExpense = deleteExpense,
         _filterExpenses = filterExpenses,
+        _addExpenses = addExpenses,
         super(ExpensesInitial()) {
     on<ExpensesEvent>(
       getExpenses,
     );
+    on<AddExpensesEvent>(addExpenseF);
     on<GetExpensesEvent>(
       getExpenses,
     );
@@ -46,6 +52,9 @@ class AssesmentBloc extends Bloc<ExpensesEvent, ExpensesState> {
   final UpdateExpenses _updateExpenses;
   final DeleteExpense _deleteExpense;
   final FilterExpenses _filterExpenses;
+  final AddExpenses _addExpenses;
+
+  ExpenseCategory? expenseCategory;
 
   FutureOr<void> getExpenses(event, emit) async {
     emit(ExpensesLoading());
@@ -95,6 +104,20 @@ class AssesmentBloc extends Bloc<ExpensesEvent, ExpensesState> {
       final expenses = await _filterExpenses(FilterExpensesParams(
         date: event.date,
         category: event.category,
+      ));
+      emit(ExpensesLoaded(expenses));
+    } catch (e) {
+      emit(ExpensesErrorState(e.toString()));
+    }
+  }
+
+  Future addExpenseF(
+      AddExpensesEvent event, Emitter<ExpensesState> emit) async {
+    emit(ExpensesLoading());
+
+    try {
+      final expenses = await _addExpenses(AddExpensesParams(
+        expense: event.expense,
       ));
       emit(ExpensesLoaded(expenses));
     } catch (e) {

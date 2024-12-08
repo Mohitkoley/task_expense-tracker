@@ -17,6 +17,22 @@ import '../../feature/expense_tracker/data/data_source/expense_data_source.dart'
 import '../../feature/expense_tracker/data/data_source/local/expence_tracker_local_data.dart'
     as _i469;
 import '../../feature/expense_tracker/data/model/expense_model.dart' as _i237;
+import '../../feature/expense_tracker/data/repository_impl/expense_repo_impl.dart'
+    as _i942;
+import '../../feature/expense_tracker/domain/repository/assesment_repo.dart'
+    as _i91;
+import '../../feature/expense_tracker/domain/usecase/add_expenses.dart'
+    as _i544;
+import '../../feature/expense_tracker/domain/usecase/delete_expense.dart'
+    as _i291;
+import '../../feature/expense_tracker/domain/usecase/filter_expenses.dart'
+    as _i894;
+import '../../feature/expense_tracker/domain/usecase/get_all_expenses.dart'
+    as _i752;
+import '../../feature/expense_tracker/domain/usecase/update_expenses.dart'
+    as _i825;
+import '../../feature/expense_tracker/presentation/bloc/expenses_bloc.dart'
+    as _i395;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -32,6 +48,28 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i371.ExpenseDataSource>(() =>
         _i469.ExpenseTrackerLocalDataSourceImpl(
             gh<_i979.Box<_i237.ExpenseModel>>()));
+    gh.lazySingleton<_i91.ExpensesRepo>(() =>
+        _i942.ExpensesRepoImpl(dataSource: gh<_i371.ExpenseDataSource>()));
+    gh.lazySingleton<_i894.FilterExpenses>(
+        () => _i894.FilterExpenses(expenseRepository: gh<_i91.ExpensesRepo>()));
+    gh.lazySingleton<_i825.UpdateExpenses>(
+        () => _i825.UpdateExpenses(expenseRepository: gh<_i91.ExpensesRepo>()));
+    gh.lazySingleton<_i291.DeleteExpense>(
+        () => _i291.DeleteExpense(expenseRepository: gh<_i91.ExpensesRepo>()));
+    gh.lazySingleton<_i544.AddExpenses>(
+        () => _i544.AddExpenses(expenseRepository: gh<_i91.ExpensesRepo>()));
+    gh.lazySingleton<_i752.GetAllExpenses>(
+        () => _i752.GetAllExpenses(gh<_i91.ExpensesRepo>()));
+    gh.lazySingleton<_i395.ExpensesBloc>(
+      () => _i395.ExpensesBloc(
+        addExpenses: gh<_i544.AddExpenses>(),
+        getAllExpenses: gh<_i752.GetAllExpenses>(),
+        updateExpenses: gh<_i825.UpdateExpenses>(),
+        deleteExpense: gh<_i291.DeleteExpense>(),
+        filterExpenses: gh<_i894.FilterExpenses>(),
+      ),
+      instanceName: 'ExpensesBloc',
+    );
     return this;
   }
 }

@@ -19,24 +19,26 @@ environment:
 dependencies:
   flutter_bloc: ^8.1.6
   hive: ^4.0.0-dev.2
-  isar_flutter_libs: ^4.0.0-dev.13
-  path_provider: ^2.1.0
+  isar_flutter_libs: ^4.0.0-dev.14
+  path_provider: ^2.1.5
   dart_either: ^2.0.0
   json_annotation: ^4.9.0
-  context_extension:
-    git:
-      url: https://github.com/Mohitkoley/common_extension.git
-      ref: main
+  # context_extension:
+  #   git:
+  #     url: https://github.com/Mohitkoley/common_extension.git
+  #     ref: main
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
   http: ^1.2.2
   get_it: ^8.0.2
-  internet_connection_checker_plus: ^2.5.2
+  # internet_connection_checker_plus: ^2.5.2
   pretty_http_logger: ^1.0.4
   retry: ^3.1.2
   equatable: ^2.0.7
   injectable: ^2.5.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

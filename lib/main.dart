@@ -1,7 +1,10 @@
 import 'package:bloc_test/core/common/screen/error_screen.dart';
 import 'package:bloc_test/core/constants/box_names.dart';
 import 'package:bloc_test/core/di/di.dart';
+import 'package:bloc_test/core/notification/local_notification.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
+import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
+import 'package:bloc_test/feature/expense_tracker/presentation/screen/expenses_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -15,26 +18,38 @@ Future<void> main() async {
   //hive
   Hive.defaultDirectory = defaultPath;
   Hive.registerAdapter<ExpenseModel>(
-      BoxNames.expenses, (json) => ExpenseModel.fromJson(json));
+      ModelNames.expense, (json) => ExpenseModel.fromJson(json));
 
   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
     return ErrorScreen(
       errorText: errorDetails.exceptionAsString(),
     );
   };
-
+  FlutterLocalNotiServices flutterLocalNotiServices =
+      FlutterLocalNotiServices();
   configureDependencies();
+  flutterLocalNotiServices.askNotificationPermission();
   runApp(
     MultiBlocProvider(
       providers: [
-        // BlocProvider(
-        //   lazy: true,
-        //   create: (context) => AssesmentBloc(
-        //     getAllCategory: GetAllAssesment(
+        BlocProvider(
+            lazy: true,
+            create: (_) {
+              final assesmentBloc = getIt<ExpensesBloc>(
+                instanceName: 'ExpensesBloc',
+              );
 
-        //     ),
-        //   ),
-        // ),
+              assesmentBloc.add(GetExpensesEvent());
+              return assesmentBloc;
+
+              // return ExpensesBloc(
+              //   addExpenses: getIt<AddExpenses>(),
+              //   getAllExpenses: getIt<GetAllExpenses>(),
+              //   updateExpenses: getIt<UpdateExpenses>(),
+              //   deleteExpense: getIt<DeleteExpense>(),
+              //   filterExpenses: getIt<FilterExpenses>(),
+              // )..add(GetExpensesEvent());
+            })
       ],
       child: const MyApp(),
     ),
@@ -48,12 +63,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Expense Test',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      // home: const SelfAssessmentsPage(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Expense Test',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: ExpensesHomepage());
   }
 }
