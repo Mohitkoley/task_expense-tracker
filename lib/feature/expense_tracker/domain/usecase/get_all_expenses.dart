@@ -1,0 +1,15 @@
+import 'package:bloc_test/core/usecase/usecase.dart';
+import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
+import 'package:bloc_test/feature/expense_tracker/domain/repository/assesment_repo.dart';
+
+class GetAllExpenses implements UseCase<List<ExpenseModel>, NoParams> {
+  final ExpensesRepo repository;
+
+  GetAllExpenses(this.repository);
+
+  @override
+  Future<List<ExpenseModel>> call(NoParams params) async {
+    final expenses = await repository.getAllExpenses();
+    return expenses.map((expense) => ExpenseModel.fromEntity(expense)).toList();
+  }
+}

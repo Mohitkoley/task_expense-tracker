@@ -18,7 +18,11 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_bloc: ^8.1.6
+  hive: ^4.0.0-dev.2
+  isar_flutter_libs: ^4.0.0-dev.13
+  path_provider: ^2.1.0
   dart_either: ^2.0.0
+  json_annotation: ^4.9.0
   context_extension:
     git:
       url: https://github.com/Mohitkoley/common_extension.git
@@ -31,6 +35,7 @@ dependencies:
   internet_connection_checker_plus: ^2.5.2
   pretty_http_logger: ^1.0.4
   retry: ^3.1.2
+  equatable: ^2.0.7
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -38,6 +43,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
+  build_runner: ^2.4.13
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter

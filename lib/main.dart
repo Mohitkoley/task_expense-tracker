@@ -1,26 +1,34 @@
-import 'package:bloc_test/feature/self_assesment/data/data_source/local/assesment_local_data.dart';
-import 'package:bloc_test/feature/self_assesment/data/repository_impl/assesment_repo_impl.dart';
-import 'package:bloc_test/feature/self_assesment/domain/usecase/get_all_category.dart';
-import 'package:bloc_test/feature/self_assesment/presentation/bloc/assesment_bloc.dart';
-import 'package:bloc_test/feature/self_assesment/presentation/screen/self_assesment_page.dart';
+import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider(
-          lazy: true,
-          create: (context) => AssesmentBloc(
-                getAllCategory: GetAllCategory(
-                  AssesmentRepoImpl(
-                    AssesmentLocalDataSourceImpl(),
-                  ),
-                ),
-              )),
-    ],
-    child: const MyApp(),
-  ));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  String defaultPath = (await getApplicationDocumentsDirectory()).path;
+
+  //hive
+  Hive.defaultDirectory = defaultPath;
+  Hive.registerAdapter<ExpenseModel>(
+      "UserModel", (json) => ExpenseModel.fromJson(json));
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        // BlocProvider(
+        //   lazy: true,
+        //   create: (context) => AssesmentBloc(
+        //     getAllCategory: GetAllAssesment(
+
+        //     ),
+        //   ),
+        // ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,11 +39,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Bloc Test',
+      title: 'Expense Test',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SelfAssessmentsPage(),
+      // home: const SelfAssessmentsPage(),
     );
   }
 }

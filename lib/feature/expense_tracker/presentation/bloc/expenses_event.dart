@@ -1,4 +1,4 @@
-part of 'assesment_bloc.dart';
+part of 'expenses_bloc.dart';
 
 @immutable
 sealed class AssesmentEvent {}
