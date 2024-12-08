@@ -1,7 +1,9 @@
 import 'package:bloc_test/core/usecase/usecase.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/repository/assesment_repo.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class UpdateExpenses
     implements UseCase<List<ExpenseModel>, UpdateExpensesIndexParams> {
   UpdateExpenses({required this.expenseRepository});

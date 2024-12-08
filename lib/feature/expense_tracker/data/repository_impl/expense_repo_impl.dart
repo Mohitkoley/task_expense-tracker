@@ -2,7 +2,9 @@ import 'package:bloc_test/feature/expense_tracker/data/data_source/expense_data_
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/repository/assesment_repo.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: ExpensesRepo)
 class ExpensesRepoImpl implements ExpensesRepo {
   final ExpenseDataSource dataSource;
 

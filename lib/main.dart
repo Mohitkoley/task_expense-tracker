@@ -1,3 +1,6 @@
+import 'package:bloc_test/core/common/screen/error_screen.dart';
+import 'package:bloc_test/core/constants/box_names.dart';
+import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +15,15 @@ Future<void> main() async {
   //hive
   Hive.defaultDirectory = defaultPath;
   Hive.registerAdapter<ExpenseModel>(
-      "UserModel", (json) => ExpenseModel.fromJson(json));
+      BoxNames.expenses, (json) => ExpenseModel.fromJson(json));
 
+  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+    return ErrorScreen(
+      errorText: errorDetails.exceptionAsString(),
+    );
+  };
+
+  configureDependencies();
   runApp(
     MultiBlocProvider(
       providers: [

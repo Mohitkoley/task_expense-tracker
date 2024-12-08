@@ -2,7 +2,9 @@ import 'package:bloc_test/feature/expense_tracker/data/data_source/expense_data_
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: ExpenseDataSource)
 class ExpenseTrackerLocalDataSourceImpl implements ExpenseDataSource {
   final Box<ExpenseModel> box;
   ExpenseTrackerLocalDataSourceImpl(this.box);
