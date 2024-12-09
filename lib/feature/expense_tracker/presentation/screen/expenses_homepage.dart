@@ -1,11 +1,3 @@
-//crate a UI for the expenses homepage with following requirements:
-//1. show a list of expenses
-//2. show a button to add a new expense
-//3. show a button to filter expenses by date
-//4. show a button to filter expenses by category
-//5. show a button to delete an expense
-//6. show a button to update an expense
-//7. on Tapping expenses List got to add expense page
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/notification/local_notification_service.dart';
@@ -34,11 +26,10 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await FlutterLocalNotiServices.scheduleDailyNotification(
-        DateTime.now().add(Duration(seconds: 10)),
+        DateTime.now().add(const Duration(seconds: 10)),
       );
     });
   }
