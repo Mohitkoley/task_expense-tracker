@@ -1,7 +1,7 @@
 import 'package:bloc_test/core/common/screen/error_screen.dart';
 import 'package:bloc_test/core/constants/box_names.dart';
 import 'package:bloc_test/core/di/di.dart';
-import 'package:bloc_test/core/notification/local_notification.dart';
+import 'package:bloc_test/core/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/screen/expenses_homepage.dart';
@@ -25,10 +25,9 @@ Future<void> main() async {
       errorText: errorDetails.exceptionAsString(),
     );
   };
-  FlutterLocalNotiServices flutterLocalNotiServices =
-      FlutterLocalNotiServices();
+
   configureDependencies();
-  flutterLocalNotiServices.askNotificationPermission();
+  await FlutterLocalNotiServices.askNotificationPermission();
   runApp(
     MultiBlocProvider(
       providers: [

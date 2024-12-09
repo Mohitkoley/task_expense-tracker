@@ -30,6 +30,10 @@
 		<string>remote-notification</string>
 		<string>processing</string>
 	</array>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>We use this to send you reminders about tracking your expenses.</string>
+	<key>UIUserNotificationSettings</key>
+	<true/>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>

@@ -8,25 +8,55 @@
 //7. on Tapping expenses List got to add expense page
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
+import 'package:bloc_test/core/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/screen/add_expenses_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ExpensesHomepage extends StatelessWidget {
+class ExpensesHomepage extends StatefulWidget {
+  ExpensesHomepage({super.key});
+  static late BuildContext openContext;
+  @override
+  State<ExpensesHomepage> createState() => _ExpensesHomepageState();
+}
+
+class _ExpensesHomepageState extends State<ExpensesHomepage> {
+  void selectNotification(String? payload) async {
+    debugPrint('notification payload: $payload');
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (context) => AddExpensesScreen()),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await FlutterLocalNotiServices.scheduleDailyNotification(
+        DateTime.now().add(Duration(seconds: 10)),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    ExpensesHomepage.openContext = context;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expenses Homepage'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          // await FlutterLocalNotiServices.showSimpleNotification();
+          // await FlutterLocalNotiServices.scheduleDailyNotification();
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
-                // Navigate to add expense page
                 return const AddExpensesScreen();
               },
             ),
@@ -49,7 +79,7 @@ class ExpensesHomepage extends StatelessWidget {
             );
           }
           if (state is ExpensesLoaded) {
-            final currentState = state as ExpensesLoaded;
+            final currentState = state;
             return Column(
               children: [
                 SizedBox(

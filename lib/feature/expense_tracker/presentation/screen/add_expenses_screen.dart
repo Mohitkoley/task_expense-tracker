@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddExpensesScreen extends StatefulWidget {
+  static late BuildContext openContext;
   final ExpenseModel? expensesModel;
   final int? index;
 
@@ -51,6 +52,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AddExpensesScreen.openContext = context;
     return Scaffold(
       appBar: AppBar(
         title: Text(
