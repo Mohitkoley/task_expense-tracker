@@ -90,8 +90,6 @@ class FlutterLocalNotiServices {
         'Background notification tapped with payload: ${notificationResponse.payload}');
 
     if (notificationResponse.payload == NotificationConst.payload) {
-      // debugPrint('Notification payload: ${notificationResponse.payload}');
-      // main();
       await Navigator.push(
         ExpensesHomepage.openContext,
         MaterialPageRoute<void>(

@@ -13,6 +13,8 @@
         apps should specify the appropriate permission for their use cases. -->
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
     <application
         android:label="flutter_bloc"
         android:name="${applicationName}"
@@ -51,6 +53,10 @@
             android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="To demonstrate how to use foreground services to show notifications"/>
         </service>
+         <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="DataSync"
+        />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">

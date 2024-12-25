@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import flutter_local_notifications
+import flutter_background_service_ios
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,6 +9,8 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    /// Add this line
+    SwiftFlutterBackgroundServicePlugin.taskIdentifier = "dev.flutter.background.refresh"
     // This is required to make any communication available in the action isolate.
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
         GeneratedPluginRegistrant.register(with: registry)

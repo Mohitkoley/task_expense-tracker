@@ -14,6 +14,9 @@ final GetIt getIt = GetIt.instance;
   asExtension: true, // default
 )
 void configureDependencies() {
+
+
+  
   if (!getIt.isRegistered<Box<ExpenseModel>>()) {
     getIt.registerLazySingleton(
       () => Hive.box<ExpenseModel>(

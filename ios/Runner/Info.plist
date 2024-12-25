@@ -22,6 +22,10 @@
 	<string>????</string>
 	<key>PermissionGroupNotification</key>
 	<string>Allow notification</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>dev.flutter.background.refresh</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

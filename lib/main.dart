@@ -17,6 +17,7 @@ Future<void> main() async {
 
   //hive
   Hive.defaultDirectory = defaultPath;
+  //registering the adapter
   Hive.registerAdapter<ExpenseModel>(
       ModelNames.expense, (json) => ExpenseModel.fromJson(json));
 
@@ -25,8 +26,9 @@ Future<void> main() async {
       errorText: errorDetails.exceptionAsString(),
     );
   };
-
+  //injecting the dependencies
   configureDependencies();
+  //
   await FlutterLocalNotiServices.askNotificationPermission();
   runApp(
     MultiBlocProvider(
