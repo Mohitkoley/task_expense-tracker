@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/export/global_export.dart';
 import '../../exports/worktime_balance_export.dart';
 
+@LazySingleton()
 class TimeSelectionBloc extends Bloc<TimeSelectionEvent, TimeSelectionState> {
   final ScheduleNotificationsUseCase scheduleNotificationsUseCase;
 

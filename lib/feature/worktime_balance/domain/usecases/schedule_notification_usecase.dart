@@ -1,5 +1,8 @@
+import 'package:bloc_test/core/export/global_export.dart';
+
 import '../../exports/worktime_balance_export.dart';
 
+@LazySingleton()
 class ScheduleNotificationsUseCase {
   final NotificationRepository repository;
 
