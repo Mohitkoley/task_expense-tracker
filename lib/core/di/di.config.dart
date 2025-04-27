@@ -54,6 +54,8 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.lazySingleton<_i380.FlutterLocalNotiServices>(
+        () => _i380.FlutterLocalNotiServices());
     gh.lazySingleton<_i172.NotificationRepository>(() =>
         _i76.NotificationRepositoryImpl(
             notificationService: gh<_i380.FlutterLocalNotiServices>()));

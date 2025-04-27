@@ -4,8 +4,8 @@ import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/core/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
-import 'package:bloc_test/feature/expense_tracker/presentation/screen/expenses_homepage.dart';
 import 'package:bloc_test/feature/worktime_balance/presentation/bloc/time_selection_bloc.dart';
+import 'package:bloc_test/feature/worktime_balance/presentation/screen/set_time_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -69,10 +69,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Expense Test',
+        title: 'Worktime Balance',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: ExpensesHomepage());
+        home: const SetTimeScreen());
   }
 }
