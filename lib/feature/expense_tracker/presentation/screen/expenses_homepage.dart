@@ -1,9 +1,8 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/core/notification/local_notification_service.dart';
-import 'package:bloc_test/feature/worktime_balance/domain/entity/expense.dart';
-import 'package:bloc_test/feature/worktime_balance/presentation/bloc/expenses_bloc.dart';
-import 'package:bloc_test/feature/worktime_balance/presentation/screen/add_expenses_screen.dart';
+import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
+import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
+import 'package:bloc_test/feature/expense_tracker/presentation/screen/add_expenses_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,9 +27,9 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await FlutterLocalNotiServices.scheduleDailyNotification(
-        DateTime.now().add(const Duration(seconds: 10)),
-      );
+      // await FlutterLocalNotiServices.scheduleDailyNotification(
+      //   DateTime.now().add(const Duration(seconds: 10)),
+      // );
     });
   }
 
@@ -43,7 +42,6 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // await FlutterLocalNotiServices.showSimpleNotification();
           // await FlutterLocalNotiServices.scheduleDailyNotification();
           Navigator.of(context).push(
             MaterialPageRoute(

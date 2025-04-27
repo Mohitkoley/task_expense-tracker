@@ -1,8 +1,8 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/feature/worktime_balance/data/model/expense_model.dart';
-import 'package:bloc_test/feature/worktime_balance/domain/entity/expense.dart';
-import 'package:bloc_test/feature/worktime_balance/presentation/bloc/expenses_bloc.dart';
+import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
+import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
+import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

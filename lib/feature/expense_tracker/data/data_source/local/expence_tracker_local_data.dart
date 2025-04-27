@@ -1,6 +1,6 @@
-import 'package:bloc_test/feature/worktime_balance/data/data_source/expense_data_source.dart';
-import 'package:bloc_test/feature/worktime_balance/data/model/expense_model.dart';
-import 'package:bloc_test/feature/worktime_balance/domain/entity/expense.dart';
+import 'package:bloc_test/feature/expense_tracker/data/data_source/expense_data_source.dart';
+import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
+import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
