@@ -143,8 +143,8 @@ class FlutterLocalNotiServices {
     for (int i = 0; i < times.length; i++) {
       await _scheduleNotification(
         id: i,
-        title: 'Reminder',
-        body: 'Notification at ${times[i].hour}:${times[i].minute}',
+        title: 'Stand and water',
+        body: 'It\'s time to walk for 10-15 min and drink water! ',
         scheduledTime: times[i],
       );
     }

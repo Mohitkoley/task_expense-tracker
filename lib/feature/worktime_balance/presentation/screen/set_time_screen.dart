@@ -11,7 +11,7 @@ class SetTimeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notification Scheduler')),
+      appBar: AppBar(title: const Text('WorkTime Health Balance')),
       body: BlocConsumer<TimeSelectionBloc, TimeSelectionState>(
         listener: (context, state) {
           if (state.error != null) {
