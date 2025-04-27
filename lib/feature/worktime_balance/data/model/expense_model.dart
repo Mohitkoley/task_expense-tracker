@@ -1,4 +1,4 @@
-import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/entity/expense.dart';
 import 'package:equatable/equatable.dart';
 
 class ExpenseModel extends ExpenseEntity with EquatableMixin {

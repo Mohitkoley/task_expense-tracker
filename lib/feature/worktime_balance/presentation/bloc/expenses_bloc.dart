@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:bloc_test/core/usecase/usecase.dart';
-import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/usecase/add_expenses.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/usecase/delete_expense.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/usecase/filter_expenses.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/usecase/get_all_expenses.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/usecase/update_expenses.dart';
+import 'package:bloc_test/feature/worktime_balance/data/model/expense_model.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/entity/expense.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/usecase/add_expenses.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/usecase/delete_expense.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/usecase/filter_expenses.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/usecase/get_all_expenses.dart';
+import 'package:bloc_test/feature/worktime_balance/domain/usecase/update_expenses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';

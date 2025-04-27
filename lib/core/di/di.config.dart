@@ -12,26 +12,26 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../feature/expense_tracker/data/data_source/expense_data_source.dart'
+import '../../feature/worktime_balance/data/data_source/expense_data_source.dart'
     as _i371;
-import '../../feature/expense_tracker/data/data_source/local/expence_tracker_local_data.dart'
+import '../../feature/worktime_balance/data/data_source/local/expence_tracker_local_data.dart'
     as _i469;
-import '../../feature/expense_tracker/data/model/expense_model.dart' as _i237;
-import '../../feature/expense_tracker/data/repository_impl/expense_repo_impl.dart'
+import '../../feature/worktime_balance/data/model/expense_model.dart' as _i237;
+import '../../feature/worktime_balance/data/repository_impl/expense_repo_impl.dart'
     as _i942;
-import '../../feature/expense_tracker/domain/repository/assesment_repo.dart'
+import '../../feature/worktime_balance/domain/repository/assesment_repo.dart'
     as _i91;
-import '../../feature/expense_tracker/domain/usecase/add_expenses.dart'
+import '../../feature/worktime_balance/domain/usecase/add_expenses.dart'
     as _i544;
-import '../../feature/expense_tracker/domain/usecase/delete_expense.dart'
+import '../../feature/worktime_balance/domain/usecase/delete_expense.dart'
     as _i291;
-import '../../feature/expense_tracker/domain/usecase/filter_expenses.dart'
+import '../../feature/worktime_balance/domain/usecase/filter_expenses.dart'
     as _i894;
-import '../../feature/expense_tracker/domain/usecase/get_all_expenses.dart'
+import '../../feature/worktime_balance/domain/usecase/get_all_expenses.dart'
     as _i752;
-import '../../feature/expense_tracker/domain/usecase/update_expenses.dart'
+import '../../feature/worktime_balance/domain/usecase/update_expenses.dart'
     as _i825;
-import '../../feature/expense_tracker/presentation/bloc/expenses_bloc.dart'
+import '../../feature/worktime_balance/presentation/bloc/expenses_bloc.dart'
     as _i395;
 
 extension GetItInjectableX on _i174.GetIt {
