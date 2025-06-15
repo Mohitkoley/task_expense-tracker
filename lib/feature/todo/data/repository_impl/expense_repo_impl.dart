@@ -1,7 +1,7 @@
-import 'package:bloc_test/feature/expense_tracker/data/data_source/expense_data_source.dart';
-import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/repository/assesment_repo.dart';
+import 'package:bloc_test/feature/todo/data/data_source/expense_data_source.dart';
+import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
+import 'package:bloc_test/feature/todo/domain/repository/assesment_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: ExpensesRepo)

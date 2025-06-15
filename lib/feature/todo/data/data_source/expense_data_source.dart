@@ -1,5 +1,5 @@
-import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
-import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
+import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
 
 abstract interface class ExpenseDataSource {
   Future<List<ExpenseModel>> getAllExpenses();

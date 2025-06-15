@@ -1,5 +1,5 @@
 import 'package:bloc_test/core/constants/box_names.dart';
-import 'package:bloc_test/feature/expense_tracker/data/model/expense_model.dart';
+import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
@@ -14,9 +14,6 @@ final GetIt getIt = GetIt.instance;
   asExtension: true, // default
 )
 void configureDependencies() {
-
-
-  
   if (!getIt.isRegistered<Box<ExpenseModel>>()) {
     getIt.registerLazySingleton(
       () => Hive.box<ExpenseModel>(
