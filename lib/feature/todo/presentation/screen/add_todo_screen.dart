@@ -101,7 +101,6 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
               onChanged: (TodoCategory? value) {
                 setState(() {
                   category = value!;
-                  print(category.name);
                 });
               },
             ),
