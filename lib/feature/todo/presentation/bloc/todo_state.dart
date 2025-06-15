@@ -16,13 +16,13 @@ final class TodoLoading extends TodoState {
 }
 
 final class TodoLoaded extends TodoState {
-  final List<TodoModel> categoryList;
+  final List<TodoModel> todoList;
 
-  TodoLoaded(this.categoryList);
+  TodoLoaded(this.todoList);
 
   @override
   // TODO: implement props
-  List<Object?> get props => [categoryList];
+  List<Object?> get props => [todoList];
 }
 
 final class TodoErrorState extends TodoState {

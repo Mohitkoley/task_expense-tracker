@@ -94,7 +94,11 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
       if (todos.count() == 0) {
         return expenses;
       }
-      final allTodos = todos.where().isCompletedEqualTo(true).findAll();
+      List<TodoModel> allTodos =
+          todos.where().isCompletedEqualTo(true).findAll();
+      allTodos = allTodos
+          .where((ele) => DateUtils.isSameDay(ele.dateTime, DateTime.now()))
+          .toList();
       expenses.addAll(allTodos);
     } on Exception {
       rethrow;
