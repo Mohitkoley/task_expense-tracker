@@ -1,9 +1,9 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/service/notification/local_notification_service.dart';
-import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/expenses_bloc.dart';
-import 'package:bloc_test/feature/todo/presentation/screen/add_expenses_screen.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,21 +55,21 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: BlocConsumer<ExpensesBloc, ExpensesState>(
+      body: BlocConsumer<ExpensesBloc, TodoExpensesState>(
         listener: (context, state) {
-          if (state is ExpensesErrorState) {
+          if (state is TodoErrorState) {
             context.showSnack(state.message);
           }
         },
-        buildWhen: (context, state) => state is! ExpensesErrorState,
+        buildWhen: (context, state) => state is! TodoErrorState,
         builder: (context, state) {
           final bloc = context.read<ExpensesBloc>();
-          if (state is ExpensesLoading) {
+          if (state is TodoLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          if (state is ExpensesLoaded) {
+          if (state is TodoLoaded) {
             final currentState = state;
             return Column(
               children: [
@@ -89,7 +89,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                           ).then((value) {
                             if (value != null) {
                               debugPrint(value.toString());
-                              bloc.add(FilterExpensesEvent(
+                              bloc.add(FilterTodoEvent(
                                 date: value,
                               ));
                             }
@@ -102,16 +102,16 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                         width: context.w * 0.4,
                         height: context.h * 0.05,
                         child: DropdownButtonFormField(
-                          items: ExpenseCategory.values
+                          items: TodoCategory.values
                               .map((e) => DropdownMenuItem(
                                     value: e,
                                     child: Text(e.toJson()),
                                   ))
                               .toList(),
                           value: bloc.expenseCategory,
-                          onChanged: (ExpenseCategory? value) {
+                          onChanged: (TodoCategory? value) {
                             bloc.expenseCategory = value;
-                            bloc.add(FilterExpensesEvent(
+                            bloc.add(FilterTodoEvent(
                               date: DateTime.now(),
                               category: bloc.expenseCategory!,
                             ));
@@ -125,7 +125,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                             iconSize: 30,
                             onPressed: () {
                               bloc.expenseCategory = null;
-                              bloc.add(GetExpensesEvent());
+                              bloc.add(GetTodoEvent());
                             },
                             icon: Icon(Icons.clear)),
                     ],
@@ -146,9 +146,9 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                         itemBuilder: (context, index) {
                           final expense = currentState.categoryList[index];
                           return ListTile(
-                            title: Text('Expense ${expense.amount}'),
+                            title: Text('Title ${expense.title}'),
                             subtitle: Text(
-                                '${expense.category.name} - ${expense.date.toLocal().toString().split('.')[0]}'),
+                                '${expense.category.name} - ${expense.dateTime.toLocal().toString().split('.')[0]}'),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -174,7 +174,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                                   onPressed: () {
                                     // Delete expense
                                     context.read<ExpensesBloc>().add(
-                                          DeleteExpensesEvent(index),
+                                          DeleteTodoEvent(index),
                                         );
                                   },
                                 ),

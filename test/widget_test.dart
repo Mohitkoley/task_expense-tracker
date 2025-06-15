@@ -11,10 +11,10 @@ import 'dart:io';
 import 'package:bloc_test/core/common/screen/error_screen.dart';
 import 'package:bloc_test/core/constants/box_names.dart';
 import 'package:bloc_test/core/di/di.dart';
-import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
-import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/expenses_bloc.dart';
-import 'package:bloc_test/feature/todo/presentation/screen/add_expenses_screen.dart';
+import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,8 +51,8 @@ void main() {
       }
       // hive
       Hive.defaultDirectory = Directory.systemTemp.path;
-      Hive.registerAdapter<ExpenseModel>(
-          ModelNames.expense, (json) => ExpenseModel.fromJson(json));
+      Hive.registerAdapter<TodoModel>(
+          ModelNames.expense, (json) => TodoModel.fromJson(json));
 
       ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
         return ErrorScreen(
@@ -77,7 +77,7 @@ void main() {
                     instanceName: 'ExpensesBloc',
                   );
 
-                  assesmentBloc.add(GetExpensesEvent());
+                  assesmentBloc.add(GetTodoEvent());
                   return assesmentBloc;
                 },
               ),
@@ -95,7 +95,7 @@ void main() {
         await tester.enterText(find.byType(TextField).first, '100');
 
         // Select category.
-        await tester.tap(find.byType(DropdownButtonFormField<ExpenseCategory>));
+        await tester.tap(find.byType(DropdownButtonFormField<TodoCategory>));
         // open the dropdown
         await tester.pumpAndSettle();
         // select the first item

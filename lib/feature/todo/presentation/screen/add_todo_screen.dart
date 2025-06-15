@@ -1,15 +1,15 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
-import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/expenses_bloc.dart';
+import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddExpensesScreen extends StatefulWidget {
   static late BuildContext openContext;
-  final ExpenseModel? expensesModel;
+  final TodoModel? expensesModel;
   final int? index;
 
   const AddExpensesScreen({super.key, this.expensesModel, this.index});
@@ -19,10 +19,10 @@ class AddExpensesScreen extends StatefulWidget {
 }
 
 class _AddExpensesScreenState extends State<AddExpensesScreen> {
-  TextEditingController _amountController = TextEditingController();
-  ExpenseCategory category = ExpenseCategory.food;
+  final TextEditingController _titleController = TextEditingController();
+  TodoCategory category = TodoCategory.food;
 
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   DateTime _date = DateTime.now();
 
@@ -32,10 +32,10 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.expensesModel != null) {
-        _amountController.text = widget.expensesModel!.amount.toString();
+        _titleController.text = widget.expensesModel!.title;
         category = widget.expensesModel!.category;
         _descriptionController.text = widget.expensesModel!.description ?? "";
-        _date = widget.expensesModel!.date;
+        _date = widget.expensesModel!.dateTime;
         print(category);
         setState(() {});
       }
@@ -46,7 +46,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _amountController.dispose();
+    _titleController.dispose();
     _descriptionController.dispose();
   }
 
@@ -72,41 +72,38 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
 
             TextField(
               keyboardType: TextInputType.number,
-              controller: _amountController,
+              controller: _titleController,
               decoration: InputDecoration(
-                hintText: 'Enter Amount',
-                labelText: 'Amount',
+                hintText: 'Enter Title',
+                labelText: 'Title',
               ),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
               ],
             ),
-
-            const SizedBox(height: 16),
-            // create a drop down button
-            DropdownButtonFormField(
-              items: ExpenseCategory.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.toJson()),
-                      ))
-                  .toList(),
-              value: category,
-              onChanged: (ExpenseCategory? value) {
-                setState(() {
-                  category = value!;
-                });
-              },
-            ),
-
             16.hBox,
-
             TextFormField(
               controller: _descriptionController,
               decoration: InputDecoration(
                 hintText: 'Enter Description',
                 labelText: 'Description',
               ),
+            ),
+            16.hBox,
+            // create a drop down button
+            DropdownButtonFormField(
+              items: TodoCategory.values
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e.toJson()),
+                      ))
+                  .toList(),
+              value: category,
+              onChanged: (TodoCategory? value) {
+                setState(() {
+                  category = value!;
+                });
+              },
             ),
 
             16.hBox,
@@ -146,16 +143,16 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                 minimumSize: Size(context.w, 50),
               ),
               onPressed: () {
-                final expense = ExpenseModel(
-                  amount: int.parse(_amountController.text),
-                  date: _date,
+                final expense = TodoModel(
+                  title: _titleController.text,
+                  dateTime: _date,
                   description: _descriptionController.text,
                   category: category,
                 );
                 context.read<ExpensesBloc>().add(
                       widget.expensesModel == null
-                          ? AddExpensesEvent(expense)
-                          : UpdateExpensesEvent(
+                          ? AddTodoEvent(expense)
+                          : UpdateTodoEvent(
                               widget.index!,
                               expense,
                             ),

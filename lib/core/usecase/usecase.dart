@@ -1,4 +1,4 @@
-import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 
 abstract interface class UseCase<T, Params> {
   Future<T> call(Params params);
@@ -7,21 +7,21 @@ abstract interface class UseCase<T, Params> {
 class NoParams {}
 
 class AddExpensesParams {
-  final ExpenseEntity expense;
+  final TodoEntity expense;
 
   AddExpensesParams({required this.expense});
 }
 
-class UpdateExpensesIndexParams {
+class UpdateTodoIndexParams {
   final int index;
-  final ExpenseEntity? expense;
+  final TodoEntity? expense;
 
-  UpdateExpensesIndexParams({required this.index, this.expense});
+  UpdateTodoIndexParams({required this.index, this.expense});
 }
 
-class FilterExpensesParams {
+class FilterTodoParams {
   final DateTime date;
-  final ExpenseCategory category;
+  final TodoCategory category;
 
-  FilterExpensesParams({required this.date, required this.category});
+  FilterTodoParams({required this.date, required this.category});
 }

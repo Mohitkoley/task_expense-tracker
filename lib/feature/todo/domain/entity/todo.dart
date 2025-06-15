@@ -1,0 +1,28 @@
+class TodoEntity {
+  String title;
+  DateTime dateTime;
+  String? description;
+  TodoCategory category;
+  bool isCompleted;
+
+  TodoEntity({
+    required this.title,
+    required this.dateTime,
+    this.description,
+    this.category = TodoCategory.food,
+    this.isCompleted = false,
+  });
+}
+
+enum TodoCategory {
+  food,
+  transport,
+  shopping,
+  entertainment,
+  health,
+  bills,
+  others;
+
+  String toJson() => name;
+  static TodoCategory fromJson(String json) => values.byName(json);
+}

@@ -1,45 +1,46 @@
-import 'package:bloc_test/feature/todo/data/data_source/expense_data_source.dart';
-import 'package:bloc_test/feature/todo/data/model/expense_model.dart';
-import 'package:bloc_test/feature/todo/domain/entity/expense.dart';
+import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
+import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: ExpenseDataSource)
-class ExpenseTrackerLocalDataSourceImpl implements ExpenseDataSource {
-  final Box<ExpenseModel> box;
+@LazySingleton(as: TodoDataSource)
+class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
+  final Box<TodoModel> box;
   ExpenseTrackerLocalDataSourceImpl(this.box);
 
   @override
-  Future<List<ExpenseModel>> addExpenses(ExpenseModel expenseModel) async {
+  Future<List<TodoModel>> addTodos(TodoModel expenseModel) async {
     try {
       box.add(expenseModel);
     } on Exception {
       rethrow;
     }
-    return getAllExpenses();
+    return getAllTodos();
   }
 
   @override
-  Future<List<ExpenseModel>> deleteExpense(int index) async {
+  Future<List<TodoModel>> deleteTodos(int index) async {
     try {
       box.deleteAt(index);
     } on Exception {
       rethrow;
     }
-    return getAllExpenses();
+    return getAllTodos();
   }
 
   @override
-  Future<List<ExpenseModel>> filterExpense(
-      {required DateTime date, required ExpenseCategory category}) async {
-    List<ExpenseModel> expenses = [];
+  Future<List<TodoModel>> filterTodos(
+      {required DateTime date, required TodoCategory category}) async {
+    List<TodoModel> todos = [];
     try {
       if (box.isEmpty) {
-        return expenses;
+        return todos;
       }
       for (int i = 0; i < box.length; i++) {
-        if (box.getAt(i).date == date || box.getAt(i).category == category) {
-          expenses.add(box.getAt(i));
+        if (box.getAt(i).dateTime == date ||
+            box.getAt(i).category == category) {
+          todos.add(box.getAt(i));
         }
       }
     } on Exception {
@@ -47,12 +48,12 @@ class ExpenseTrackerLocalDataSourceImpl implements ExpenseDataSource {
     } catch (e) {
       rethrow;
     }
-    return expenses;
+    return todos;
   }
 
   @override
-  Future<List<ExpenseModel>> getAllExpenses() async {
-    List<ExpenseModel> expenses = [];
+  Future<List<TodoModel>> getAllTodos() async {
+    List<TodoModel> expenses = [];
     try {
       if (box.isEmpty) {
         return expenses;
@@ -67,13 +68,13 @@ class ExpenseTrackerLocalDataSourceImpl implements ExpenseDataSource {
   }
 
   @override
-  Future<List<ExpenseModel>> updateExpense(
-      int index, ExpenseModel expenseEntity) async {
+  Future<List<TodoModel>> updateTodos(
+      int index, TodoModel expenseEntity) async {
     try {
       box.putAt(index, expenseEntity);
     } on Exception {
       rethrow;
     }
-    return getAllExpenses();
+    return getAllTodos();
   }
 }
