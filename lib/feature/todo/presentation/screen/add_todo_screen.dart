@@ -38,7 +38,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
         category = widget.todoModel!.category;
         _descriptionController.text = widget.todoModel!.description ?? "";
         _date = widget.todoModel!.dateTime;
-        print(category);
+
         setState(() {});
       }
     });
@@ -101,6 +101,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
               onChanged: (TodoCategory? value) {
                 setState(() {
                   category = value!;
+                  print(category.name);
                 });
               },
             ),
@@ -144,7 +145,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
               onPressed: () {
                 final isar = getIt<Isar>();
                 final expense = TodoModel(
-                  id: isar.todoModels.autoIncrement(),
+                  id: widget.todoModel?.id ?? isar.todoModels.autoIncrement(),
                   kTitle: _titleController.text.trim(),
                   kDateTime: _date,
                   kDescription: _descriptionController.text.trim(),
