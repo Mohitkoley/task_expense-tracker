@@ -1,18 +1,19 @@
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
-import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
+import 'package:isar/isar.dart';
 
 @LazySingleton(as: TodoDataSource)
 class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
-  final Box<TodoModel> box;
-  ExpenseTrackerLocalDataSourceImpl(this.box);
+  final Isar isar;
+  final IsarCollection<int, TodoModel> todos;
+  ExpenseTrackerLocalDataSourceImpl(this.todos, this.isar);
 
   @override
-  Future<List<TodoModel>> addTodos(TodoModel expenseModel) async {
+  Future<List<TodoModel>> addTodos(TodoModel todoModel) async {
     try {
-      box.add(expenseModel);
+      todos.put(todoModel);
     } on Exception {
       rethrow;
     }
@@ -20,9 +21,9 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Future<List<TodoModel>> deleteTodos(int index) async {
+  Future<List<TodoModel>> deleteTodos(TodoModel todoModel) async {
     try {
-      box.deleteAt(index);
+      todos.delete(todoModel.id);
     } on Exception {
       rethrow;
     }
@@ -34,13 +35,12 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
       {required DateTime date, required TodoCategory category}) async {
     List<TodoModel> todos = [];
     try {
-      if (box.isEmpty) {
+      if (todos.isEmpty) {
         return todos;
       }
-      for (int i = 0; i < box.length; i++) {
-        if (box.getAt(i).dateTime == date ||
-            box.getAt(i).category == category) {
-          todos.add(box.getAt(i));
+      for (int i = 0; i < todos.length; i++) {
+        if (todos[i].dateTime == date || todos[i].category == category) {
+          todos.add(todos[i]);
         }
       }
     } on Exception {
@@ -55,12 +55,11 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   Future<List<TodoModel>> getAllTodos() async {
     List<TodoModel> expenses = [];
     try {
-      if (box.isEmpty) {
+      if (todos.count() == 0) {
         return expenses;
       }
-      for (int i = 0; i < box.length; i++) {
-        expenses.add(box.getAt(i));
-      }
+      final allTodos = todos.where().findAll();
+      expenses.addAll(allTodos);
     } on Exception {
       rethrow;
     }
@@ -71,7 +70,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   Future<List<TodoModel>> updateTodos(
       int index, TodoModel expenseEntity) async {
     try {
-      box.putAt(index, expenseEntity);
+      todos.put(expenseEntity);
     } on Exception {
       rethrow;
     }

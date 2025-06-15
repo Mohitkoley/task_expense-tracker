@@ -4,8 +4,8 @@ import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 class AddExpensesScreen extends StatefulWidget {
   static late BuildContext openContext;
@@ -21,7 +21,7 @@ class AddExpensesScreen extends StatefulWidget {
 class _AddExpensesScreenState extends State<AddExpensesScreen> {
   final TextEditingController _titleController = TextEditingController();
   TodoCategory category = TodoCategory.food;
-
+  var uuid = const Uuid();
   final TextEditingController _descriptionController = TextEditingController();
 
   DateTime _date = DateTime.now();
@@ -77,9 +77,6 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                 hintText: 'Enter Title',
                 labelText: 'Title',
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
             ),
             16.hBox,
             TextFormField(
@@ -144,10 +141,10 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
               ),
               onPressed: () {
                 final expense = TodoModel(
-                  title: _titleController.text,
-                  dateTime: _date,
-                  description: _descriptionController.text,
-                  category: category,
+                  kTitle: _titleController.text.trim(),
+                  kDateTime: _date,
+                  kDescription: _descriptionController.text.trim(),
+                  kCategory: category,
                 );
                 context.read<TodoBloc>().add(
                       widget.todoModel == null

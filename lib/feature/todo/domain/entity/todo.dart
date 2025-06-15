@@ -1,4 +1,5 @@
 class TodoEntity {
+  final int ID;
   String title;
   DateTime dateTime;
   String? description;
@@ -6,6 +7,7 @@ class TodoEntity {
   bool isCompleted;
 
   TodoEntity({
+    required this.ID,
     required this.title,
     required this.dateTime,
     this.description,

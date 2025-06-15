@@ -5,7 +5,7 @@ abstract interface class TodoDataSource {
   Future<List<TodoModel>> getAllTodos();
   Future<List<TodoModel>> addTodos(TodoModel expenseEntity);
   Future<List<TodoModel>> updateTodos(int index, TodoModel expenseModel);
-  Future<List<TodoModel>> deleteTodos(int index);
+  Future<List<TodoModel>> deleteTodos(TodoModel expenseEntity);
   Future<List<TodoModel>> filterTodos({
     required DateTime date,
     required TodoCategory category,

@@ -88,8 +88,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _deleteExpense(UpdateTodoIndexParams(
-        index: event.index,
+      final expenses = await _deleteExpense(AddExpensesParams(
+        expense: event.todo,
       ));
       emit(TodoLoaded(expenses));
     } catch (e) {

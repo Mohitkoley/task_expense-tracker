@@ -12,9 +12,9 @@ final class AddTodoEvent extends TodoEvent {
 }
 
 final class DeleteTodoEvent extends TodoEvent {
-  final int index;
+  final TodoModel todo;
 
-  DeleteTodoEvent(this.index);
+  DeleteTodoEvent(this.todo);
 }
 
 final class UpdateTodoEvent extends TodoEvent {

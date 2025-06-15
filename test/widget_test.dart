@@ -9,16 +9,13 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:bloc_test/core/common/screen/error_screen.dart';
-import 'package:bloc_test/core/constants/box_names.dart';
 import 'package:bloc_test/core/di/di.dart';
-import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
 
 void main() {
@@ -50,9 +47,6 @@ void main() {
         await response.pipe(file.openWrite());
       }
       // hive
-      Hive.defaultDirectory = Directory.systemTemp.path;
-      Hive.registerAdapter<TodoModel>(
-          ModelNames.expense, (json) => TodoModel.fromJson(json));
 
       ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
         return ErrorScreen(

@@ -144,37 +144,50 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                         itemCount: currentState.categoryList
                             .length, // Replace with the actual number of expenses
                         itemBuilder: (context, index) {
-                          final expense = currentState.categoryList[index];
+                          final todo = currentState.categoryList[index];
                           return ListTile(
-                            title: Text('Title ${expense.title}'),
+                            onTap: () {
+                              // Update expense
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    // Navigate to add expense page
+                                    return AddExpensesScreen(
+                                      todoModel: todo,
+                                      index: index,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            title: Text('Title ${todo.title}'),
                             subtitle: Text(
-                                '${expense.category.name} - ${expense.dateTime.toLocal().toString().split('.')[0]}'),
+                                '${todo.category.name} - ${todo.dateTime.toLocal().toString().split('.')[0]}'),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    // Update expense
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          // Navigate to add expense page
-                                          return AddExpensesScreen(
-                                            todoModel: expense,
-                                            index: index,
+                                Transform.scale(
+                                  scale: 1.5,
+                                  child: Checkbox.adaptive(
+                                    value: todo.isCompleted,
+                                    onChanged: (value) {
+                                      context.read<TodoBloc>().add(
+                                            UpdateTodoEvent(
+                                              index,
+                                              todo.copyWith(
+                                                isCompleted: value,
+                                              ),
+                                            ),
                                           );
-                                        },
-                                      ),
-                                    );
-                                  },
+                                    },
+                                  ),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     // Delete expense
                                     context.read<TodoBloc>().add(
-                                          DeleteTodoEvent(index),
+                                          DeleteTodoEvent(todo),
                                         );
                                   },
                                 ),
