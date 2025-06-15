@@ -1,6 +1,6 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/core/notification/local_notification_service.dart';
+import 'package:bloc_test/core/service/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/expense_tracker/domain/entity/expense.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/bloc/expenses_bloc.dart';
 import 'package:bloc_test/feature/expense_tracker/presentation/screen/add_expenses_screen.dart';
