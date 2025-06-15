@@ -8,6 +8,9 @@ PODS:
     - Flutter
   - isar_flutter_libs (1.0.0):
     - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
@@ -15,6 +18,7 @@ DEPENDENCIES:
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 EXTERNAL SOURCES:
   background_fetch:
@@ -27,13 +31,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   isar_flutter_libs:
     :path: ".symlinks/plugins/isar_flutter_libs/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  background_fetch: 39f11371c0dce04b001c4bfd5e782bcccb0a85e2
+  background_fetch: 94b36ee293e82972852dba8ede1fbcd3bd3d9d57
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
-  flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
-  isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
+  flutter_background_service_ios: 00d31bdff7b4bfe06d32375df358abe0329cf87e
+  flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
+  isar_flutter_libs: 9fc2cfb928c539e1b76c481ba5d143d556d94920
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
 
 PODFILE CHECKSUM: 83f6a08c58d4b249cda5d50acce1e33fac59623c
 
