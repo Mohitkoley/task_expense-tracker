@@ -30,9 +30,7 @@ Future<void> main() async {
         BlocProvider(
             lazy: true,
             create: (_) {
-              final assesmentBloc = getIt<TodoBloc>(
-                instanceName: 'ExpensesBloc',
-              );
+              final assesmentBloc = getIt<TodoBloc>();
 
               assesmentBloc.add(GetTodoEvent());
               return assesmentBloc;

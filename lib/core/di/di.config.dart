@@ -53,16 +53,13 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1004.UpdateTodo(expenseRepository: gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i326.DeleteExpense>(
         () => _i326.DeleteExpense(expenseRepository: gh<_i969.TodoRepo>()));
-    gh.lazySingleton<_i762.TodoBloc>(
-      () => _i762.TodoBloc(
-        addExpenses: gh<_i1020.AddTodos>(),
-        getAllExpenses: gh<_i171.GetAllTodo>(),
-        updateExpenses: gh<_i1004.UpdateTodo>(),
-        deleteExpense: gh<_i326.DeleteExpense>(),
-        filterExpenses: gh<_i806.FilterTodo>(),
-      ),
-      instanceName: 'TodoBloc',
-    );
+    gh.lazySingleton<_i762.TodoBloc>(() => _i762.TodoBloc(
+          addExpenses: gh<_i1020.AddTodos>(),
+          getAllExpenses: gh<_i171.GetAllTodo>(),
+          updateExpenses: gh<_i1004.UpdateTodo>(),
+          deleteExpense: gh<_i326.DeleteExpense>(),
+          filterExpenses: gh<_i806.FilterTodo>(),
+        ));
     return this;
   }
 }

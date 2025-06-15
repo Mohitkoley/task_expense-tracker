@@ -16,7 +16,6 @@ import 'package:injectable/injectable.dart';
 part 'todo_event.dart';
 part 'todo_state.dart';
 
-@named
 @LazySingleton()
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   TodoBloc({
