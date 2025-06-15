@@ -18,8 +18,8 @@ part 'todo_state.dart';
 
 @named
 @LazySingleton()
-class ExpensesBloc extends Bloc<TodoEvent, TodoExpensesState> {
-  ExpensesBloc({
+class TodoBloc extends Bloc<TodoEvent, TodoState> {
+  TodoBloc({
     required AddTodos addExpenses,
     required GetAllTodo getAllExpenses,
     required UpdateTodo updateExpenses,
@@ -69,7 +69,7 @@ class ExpensesBloc extends Bloc<TodoEvent, TodoExpensesState> {
   }
 
   Future<void> updateTodo(
-      UpdateTodoEvent event, Emitter<TodoExpensesState> emit) async {
+      UpdateTodoEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
 
     try {
@@ -84,7 +84,7 @@ class ExpensesBloc extends Bloc<TodoEvent, TodoExpensesState> {
   }
 
   Future<void> deleteTodo(
-      DeleteTodoEvent event, Emitter<TodoExpensesState> emit) async {
+      DeleteTodoEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
 
     try {
@@ -98,7 +98,7 @@ class ExpensesBloc extends Bloc<TodoEvent, TodoExpensesState> {
   }
 
   Future<void> filterTodo(
-      FilterTodoEvent event, Emitter<TodoExpensesState> emit) async {
+      FilterTodoEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
 
     try {
@@ -112,8 +112,7 @@ class ExpensesBloc extends Bloc<TodoEvent, TodoExpensesState> {
     }
   }
 
-  Future addExpenseF(
-      AddTodoEvent event, Emitter<TodoExpensesState> emit) async {
+  Future addExpenseF(AddTodoEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
 
     try {

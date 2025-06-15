@@ -39,7 +39,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
     ExpensesHomepage.openContext = context;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expenses Homepage'),
+        title: const Text('Todo Homepage'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -55,7 +55,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: BlocConsumer<ExpensesBloc, TodoExpensesState>(
+      body: BlocConsumer<TodoBloc, TodoState>(
         listener: (context, state) {
           if (state is TodoErrorState) {
             context.showSnack(state.message);
@@ -63,7 +63,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
         },
         buildWhen: (context, state) => state is! TodoErrorState,
         builder: (context, state) {
-          final bloc = context.read<ExpensesBloc>();
+          final bloc = context.read<TodoBloc>();
           if (state is TodoLoading) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -95,7 +95,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                             }
                           });
                         },
-                        child: Text('Filter by Date'),
+                        child: const Text('Filter by Date'),
                       ),
                       30.wBox,
                       SizedBox(
@@ -173,7 +173,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     // Delete expense
-                                    context.read<ExpensesBloc>().add(
+                                    context.read<TodoBloc>().add(
                                           DeleteTodoEvent(index),
                                         );
                                   },

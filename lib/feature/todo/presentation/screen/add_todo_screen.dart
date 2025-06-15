@@ -56,7 +56,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.expensesModel == null ? 'Add Expense' : 'Edit Expense',
+          widget.expensesModel == null ? 'Add Todo' : 'Edit Todo',
         ),
       ),
       body: SingleChildScrollView(
@@ -149,7 +149,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                   description: _descriptionController.text,
                   category: category,
                 );
-                context.read<ExpensesBloc>().add(
+                context.read<TodoBloc>().add(
                       widget.expensesModel == null
                           ? AddTodoEvent(expense)
                           : UpdateTodoEvent(

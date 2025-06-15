@@ -51,8 +51,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i544.AddTodos(todoRepository: gh<_i91.TodoRepo>()));
     gh.lazySingleton<_i752.GetAllTodo>(
         () => _i752.GetAllTodo(gh<_i91.TodoRepo>()));
-    gh.lazySingleton<_i395.ExpensesBloc>(
-      () => _i395.ExpensesBloc(
+    gh.lazySingleton<_i395.TodoBloc>(
+      () => _i395.TodoBloc(
         addExpenses: gh<_i544.AddTodos>(),
         getAllExpenses: gh<_i752.GetAllTodo>(),
         updateExpenses: gh<_i825.UpdateTodo>(),

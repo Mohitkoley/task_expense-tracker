@@ -73,7 +73,7 @@ void main() {
               BlocProvider(
                 lazy: true,
                 create: (_) {
-                  final assesmentBloc = getIt<ExpensesBloc>(
+                  final assesmentBloc = getIt<TodoBloc>(
                     instanceName: 'ExpensesBloc',
                   );
 

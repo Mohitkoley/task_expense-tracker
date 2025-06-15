@@ -36,7 +36,7 @@ Future<void> main() async {
         BlocProvider(
             lazy: true,
             create: (_) {
-              final assesmentBloc = getIt<ExpensesBloc>(
+              final assesmentBloc = getIt<TodoBloc>(
                 instanceName: 'ExpensesBloc',
               );
 

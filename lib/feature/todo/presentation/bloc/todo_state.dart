@@ -1,21 +1,21 @@
 part of 'todo_bloc.dart';
 
 @immutable
-sealed class TodoExpensesState extends Equatable {}
+sealed class TodoState extends Equatable {}
 
-final class TodoInitial extends TodoExpensesState {
+final class TodoInitial extends TodoState {
   @override
   // TODO: implement props
   List<Object?> get props => [];
 }
 
-final class TodoLoading extends TodoExpensesState {
+final class TodoLoading extends TodoState {
   @override
   // TODO: implement props
   List<Object?> get props => [];
 }
 
-final class TodoLoaded extends TodoExpensesState {
+final class TodoLoaded extends TodoState {
   final List<TodoModel> categoryList;
 
   TodoLoaded(this.categoryList);
@@ -25,7 +25,7 @@ final class TodoLoaded extends TodoExpensesState {
   List<Object?> get props => [categoryList];
 }
 
-final class TodoErrorState extends TodoExpensesState {
+final class TodoErrorState extends TodoState {
   final String message;
 
   TodoErrorState(this.message);
