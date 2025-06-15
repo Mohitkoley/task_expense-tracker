@@ -12,7 +12,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../feature/todo/data/data_source/local/expence_tracker_local_data.dart'
+import '../../feature/todo/data/data_source/local/todo_tracker_local_data.dart'
     as _i469;
 import '../../feature/todo/data/data_source/todo_data_source.dart' as _i371;
 import '../../feature/todo/data/model/todo_model.dart' as _i237;
