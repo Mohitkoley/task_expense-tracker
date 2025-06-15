@@ -13,7 +13,9 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   @override
   Future<List<TodoModel>> addTodos(TodoModel todoModel) async {
     try {
-      todos.put(todoModel);
+      await isar.writeAsync((isar) {
+        isar.todoModels.put(todoModel);
+      });
     } on Exception {
       rethrow;
     }
@@ -23,7 +25,9 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   @override
   Future<List<TodoModel>> deleteTodos(TodoModel todoModel) async {
     try {
-      todos.delete(todoModel.id);
+      await isar.writeAsync((isar) {
+        isar.todoModels.delete(todoModel.id);
+      });
     } on Exception {
       rethrow;
     }
@@ -33,11 +37,8 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   @override
   Future<List<TodoModel>> filterTodos(
       {required DateTime date, required TodoCategory category}) async {
-    List<TodoModel> todos = [];
+    List<TodoModel> todos = await getAllTodos();
     try {
-      if (todos.isEmpty) {
-        return todos;
-      }
       for (int i = 0; i < todos.length; i++) {
         if (todos[i].dateTime == date || todos[i].category == category) {
           todos.add(todos[i]);
@@ -70,7 +71,9 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   Future<List<TodoModel>> updateTodos(
       int index, TodoModel expenseEntity) async {
     try {
-      todos.put(expenseEntity);
+      await isar.writeAsync((isar) {
+        isar.todoModels.put(expenseEntity);
+      });
     } on Exception {
       rethrow;
     }

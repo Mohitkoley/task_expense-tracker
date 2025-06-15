@@ -7,7 +7,7 @@ part 'todo_model.g.dart';
 @Name('todo')
 class TodoModel extends TodoEntity {
   TodoModel(
-      {this.id = 1,
+      {required this.id,
       required this.kTitle,
       required this.kDateTime,
       this.kDescription,

@@ -1,3 +1,4 @@
+import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
@@ -5,6 +6,7 @@ import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 
 class AddExpensesScreen extends StatefulWidget {
@@ -140,7 +142,9 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                 minimumSize: Size(context.w, 50),
               ),
               onPressed: () {
+                final isar = getIt<Isar>();
                 final expense = TodoModel(
+                  id: isar.todoModels.autoIncrement(),
                   kTitle: _titleController.text.trim(),
                   kDateTime: _date,
                   kDescription: _descriptionController.text.trim(),
