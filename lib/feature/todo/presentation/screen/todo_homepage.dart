@@ -125,7 +125,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                             iconSize: 30,
                             onPressed: () {
                               bloc.expenseCategory = null;
-                              bloc.add(GetTodoEvent());
+                              bloc.add(GetUnCompleteTodoEvent());
                             },
                             icon: Icon(Icons.clear)),
                     ],

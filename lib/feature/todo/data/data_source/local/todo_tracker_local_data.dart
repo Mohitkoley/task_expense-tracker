@@ -1,6 +1,7 @@
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
 
@@ -19,7 +20,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getAllTodos();
+    return getUnCompleteTodos();
   }
 
   @override
@@ -31,16 +32,17 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getAllTodos();
+    return getUnCompleteTodos();
   }
 
   @override
   Future<List<TodoModel>> filterTodos(
       {required DateTime date, required TodoCategory category}) async {
-    List<TodoModel> todos = await getAllTodos();
+    List<TodoModel> todos = await getUnCompleteTodos();
     try {
       for (int i = 0; i < todos.length; i++) {
-        if (todos[i].dateTime == date || todos[i].category == category) {
+        if (DateUtils.isSameDay(todos[i].kDateTime, date) ||
+            todos[i].category == category) {
           todos.add(todos[i]);
         }
       }
@@ -53,13 +55,18 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Future<List<TodoModel>> getAllTodos() async {
+  Future<List<TodoModel>> getUnCompleteTodos() async {
     List<TodoModel> expenses = [];
     try {
       if (todos.count() == 0) {
         return expenses;
       }
-      final allTodos = todos.where().findAll();
+      final allTodos = todos
+          .where()
+          .isCompletedEqualTo(false)
+          .dateTimeBetween(DateTime.now().subtract(const Duration(days: 1)),
+              DateTime.now().add(const Duration(days: 1)))
+          .findAll();
       expenses.addAll(allTodos);
     } on Exception {
       rethrow;
@@ -77,6 +84,21 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getAllTodos();
+    return getUnCompleteTodos();
+  }
+
+  @override
+  Future<List<TodoModel>> getCompleteTodos() async {
+    List<TodoModel> expenses = [];
+    try {
+      if (todos.count() == 0) {
+        return expenses;
+      }
+      final allTodos = todos.where().isCompletedEqualTo(true).findAll();
+      expenses.addAll(allTodos);
+    } on Exception {
+      rethrow;
+    }
+    return expenses;
   }
 }

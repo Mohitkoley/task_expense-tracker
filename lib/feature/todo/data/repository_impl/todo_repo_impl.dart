@@ -43,8 +43,8 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Future<List<TodoEntity>> getAllTodos() {
-    return dataSource.getAllTodos();
+  Future<List<TodoEntity>> getAllUncomplete() {
+    return dataSource.getUnCompleteTodos();
   }
 
   @override
@@ -60,5 +60,10 @@ class ExpensesRepoImpl implements TodoRepo {
         kDescription: expenseEntity.description,
       ),
     );
+  }
+
+  @override
+  Future<List<TodoEntity>> getAllComplete() {
+    return dataSource.getCompleteTodos();
   }
 }

@@ -71,7 +71,7 @@ void main() {
                     instanceName: 'ExpensesBloc',
                   );
 
-                  assesmentBloc.add(GetTodoEvent());
+                  assesmentBloc.add(GetUnCompleteTodoEvent());
                   return assesmentBloc;
                 },
               ),

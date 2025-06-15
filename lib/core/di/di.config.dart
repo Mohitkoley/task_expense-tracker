@@ -21,7 +21,8 @@ import '../../feature/todo/domain/repository/todo_repo.dart' as _i969;
 import '../../feature/todo/domain/usecase/add_todo.dart' as _i1020;
 import '../../feature/todo/domain/usecase/delete_todo.dart' as _i326;
 import '../../feature/todo/domain/usecase/filter_todo.dart' as _i806;
-import '../../feature/todo/domain/usecase/get_all_todo.dart' as _i171;
+import '../../feature/todo/domain/usecase/get_all_uncomplete_todo.dart'
+    as _i171;
 import '../../feature/todo/domain/usecase/update_todo.dart' as _i1004;
 import '../../feature/todo/presentation/bloc/todo_bloc.dart' as _i762;
 
@@ -43,8 +44,8 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.lazySingleton<_i969.TodoRepo>(
         () => _i458.ExpensesRepoImpl(dataSource: gh<_i193.TodoDataSource>()));
-    gh.lazySingleton<_i171.GetAllTodo>(
-        () => _i171.GetAllTodo(gh<_i969.TodoRepo>()));
+    gh.lazySingleton<_i171.GetAllUnCompleteTodo>(
+        () => _i171.GetAllUnCompleteTodo(gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i1020.AddTodos>(
         () => _i1020.AddTodos(todoRepository: gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i806.FilterTodo>(
@@ -55,7 +56,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i326.DeleteExpense(expenseRepository: gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i762.TodoBloc>(() => _i762.TodoBloc(
           addExpenses: gh<_i1020.AddTodos>(),
-          getAllExpenses: gh<_i171.GetAllTodo>(),
+          getAllExpenses: gh<_i171.GetAllUnCompleteTodo>(),
           updateExpenses: gh<_i1004.UpdateTodo>(),
           deleteExpense: gh<_i326.DeleteExpense>(),
           filterExpenses: gh<_i806.FilterTodo>(),

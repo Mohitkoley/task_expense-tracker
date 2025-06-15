@@ -6,7 +6,7 @@ import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/add_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/delete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/filter_todo.dart';
-import 'package:bloc_test/feature/todo/domain/usecase/get_all_todo.dart';
+import 'package:bloc_test/feature/todo/domain/usecase/get_all_uncomplete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/update_todo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ part 'todo_state.dart';
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   TodoBloc({
     required AddTodos addExpenses,
-    required GetAllTodo getAllExpenses,
+    required GetAllUnCompleteTodo getAllExpenses,
     required UpdateTodo updateExpenses,
     required DeleteExpense deleteExpense,
     required FilterTodo filterExpenses,
@@ -34,7 +34,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       getTodo,
     );
     on<AddTodoEvent>(addExpenseF);
-    on<GetTodoEvent>(
+    on<GetUnCompleteTodoEvent>(
       getTodo,
     );
     on<UpdateTodoEvent>(
@@ -47,7 +47,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       filterTodo,
     );
   }
-  final GetAllTodo _getExpenses;
+  final GetAllUnCompleteTodo _getExpenses;
 
   final UpdateTodo _updateExpenses;
   final DeleteExpense _deleteExpense;

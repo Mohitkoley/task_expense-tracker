@@ -32,7 +32,7 @@ Future<void> main() async {
             create: (_) {
               final assesmentBloc = getIt<TodoBloc>();
 
-              assesmentBloc.add(GetTodoEvent());
+              assesmentBloc.add(GetUnCompleteTodoEvent());
               return assesmentBloc;
 
               // return ExpensesBloc(
