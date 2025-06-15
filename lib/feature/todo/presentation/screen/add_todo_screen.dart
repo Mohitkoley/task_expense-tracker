@@ -9,10 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddExpensesScreen extends StatefulWidget {
   static late BuildContext openContext;
-  final TodoModel? expensesModel;
+  final TodoModel? todoModel;
   final int? index;
 
-  const AddExpensesScreen({super.key, this.expensesModel, this.index});
+  const AddExpensesScreen({super.key, this.todoModel, this.index});
 
   @override
   State<AddExpensesScreen> createState() => _AddExpensesScreenState();
@@ -31,11 +31,11 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.expensesModel != null) {
-        _titleController.text = widget.expensesModel!.title;
-        category = widget.expensesModel!.category;
-        _descriptionController.text = widget.expensesModel!.description ?? "";
-        _date = widget.expensesModel!.dateTime;
+      if (widget.todoModel != null) {
+        _titleController.text = widget.todoModel!.title;
+        category = widget.todoModel!.category;
+        _descriptionController.text = widget.todoModel!.description ?? "";
+        _date = widget.todoModel!.dateTime;
         print(category);
         setState(() {});
       }
@@ -56,7 +56,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.expensesModel == null ? 'Add Todo' : 'Edit Todo',
+          widget.todoModel == null ? 'Add Todo' : 'Edit Todo',
         ),
       ),
       body: SingleChildScrollView(
@@ -65,7 +65,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add or Edit Expense',
+              'Add or Edit Todo',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -150,7 +150,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                   category: category,
                 );
                 context.read<TodoBloc>().add(
-                      widget.expensesModel == null
+                      widget.todoModel == null
                           ? AddTodoEvent(expense)
                           : UpdateTodoEvent(
                               widget.index!,

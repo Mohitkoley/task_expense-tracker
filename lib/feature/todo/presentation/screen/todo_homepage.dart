@@ -161,7 +161,7 @@ class _ExpensesHomepageState extends State<ExpensesHomepage> {
                                         builder: (context) {
                                           // Navigate to add expense page
                                           return AddExpensesScreen(
-                                            expensesModel: expense,
+                                            todoModel: expense,
                                             index: index,
                                           );
                                         },
