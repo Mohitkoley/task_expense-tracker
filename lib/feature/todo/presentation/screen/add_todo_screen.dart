@@ -4,24 +4,24 @@ import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/utils/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-class AddExpensesScreen extends StatefulWidget {
+class AddOrUpdateTodoScreen extends StatefulWidget {
   static late BuildContext openContext;
   final TodoModel? todoModel;
   final int? index;
 
-  const AddExpensesScreen({super.key, this.todoModel, this.index});
+  const AddOrUpdateTodoScreen({super.key, this.todoModel, this.index});
 
   @override
-  State<AddExpensesScreen> createState() => _AddExpensesScreenState();
+  State<AddOrUpdateTodoScreen> createState() => _AddOrUpdateTodoScreenState();
 }
 
-class _AddExpensesScreenState extends State<AddExpensesScreen> {
+class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
   final TextEditingController _titleController = TextEditingController();
   TodoCategory category = TodoCategory.food;
 
@@ -66,7 +66,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AddExpensesScreen.openContext = context;
+    AddOrUpdateTodoScreen.openContext = context;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -205,8 +205,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final isar = getIt<Isar>();
-                    debugPrint(
-                        "start date and end date ${_startDate?.dateTime} ${_endDate?.dateTime}");
+
                     final expense = TodoModel(
                       id: widget.todoModel?.id ??
                           isar.todoModels.autoIncrement(),
@@ -216,14 +215,13 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                       kDescription: _descriptionController.text.trim(),
                       kCategory: category,
                     );
-                    context.read<TodoBloc>().add(
-                          widget.todoModel == null
-                              ? AddTodoEvent(expense)
-                              : UpdateTodoEvent(
-                                  widget.index!,
-                                  expense,
-                                ),
-                        );
+
+                    if (widget.todoModel == null) {
+                      context.read<TodoCubit>().addTodo(expense);
+                    } else {
+                      context.read<TodoCubit>().updateTodo(expense);
+                    }
+
                     Navigator.pop(context);
                   } else {
                     context.showSnack("Please fill all the fields");

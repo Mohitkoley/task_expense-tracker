@@ -11,7 +11,7 @@ import 'dart:io';
 import 'package:bloc_test/core/common/screen/error_screen.dart';
 import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,16 +67,16 @@ void main() {
               BlocProvider(
                 lazy: true,
                 create: (_) {
-                  final assesmentBloc = getIt<TodoBloc>(
+                  final assesmentBloc = getIt<TodoCubit>(
                     instanceName: 'ExpensesBloc',
                   );
 
-                  assesmentBloc.add(GetUnCompleteTodoEvent());
+                  assesmentBloc.getAllTodo();
                   return assesmentBloc;
                 },
               ),
             ],
-            child: const MaterialApp(home: AddExpensesScreen()),
+            child: const MaterialApp(home: AddOrUpdateTodoScreen()),
           ),
         );
 

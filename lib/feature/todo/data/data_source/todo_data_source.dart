@@ -5,7 +5,7 @@ abstract interface class TodoDataSource {
   Stream<List<TodoModel>> getUnCompleteTodos();
   Stream<List<TodoModel>> getCompleteTodos();
   Future<List<TodoModel>> addTodos(TodoModel expenseEntity);
-  Future<List<TodoModel>> updateTodos(int index, TodoModel expenseModel);
+  Future<List<TodoModel>> updateTodos(TodoModel expenseModel);
   Future<List<TodoModel>> deleteTodos(TodoModel expenseEntity);
 
   Future<List<TodoModel>> filterTodos({

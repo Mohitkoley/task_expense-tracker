@@ -50,9 +50,8 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Future<List<TodoEntity>> updateTodo(int index, TodoEntity expenseEntity) {
+  Future<List<TodoEntity>> updateTodo(TodoEntity expenseEntity) {
     return dataSource.updateTodos(
-      index,
       TodoModel(
         kEndDateTime: expenseEntity.endDateTime,
         id: expenseEntity.ID,

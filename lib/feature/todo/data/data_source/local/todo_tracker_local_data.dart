@@ -10,6 +10,10 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   final Isar isar;
   final IsarCollection<int, TodoModel> todos;
   ExpenseTrackerLocalDataSourceImpl(this.todos, this.isar);
+  DateTime _startOfToday() => DateTime.now()
+      .toLocal()
+      .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  DateTime _startOfTomorrow() => _startOfToday().add(const Duration(days: 1));
 
   @override
   Future<List<TodoModel>> addTodos(TodoModel todoModel) async {
@@ -64,15 +68,8 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
             DateTime.now().subtract(const Duration(days: 1)),
             DateTime.now(),
           )
-          .watch()
-          .map((_) => todos
-              .where()
-              .isCompletedEqualTo(false)
-              .startDateTimeBetween(
-                DateTime.now().subtract(const Duration(days: 1)),
-                DateTime.now(),
-              )
-              .findAll());
+          .watch(fireImmediately: true);
+
       yield* allTodos;
     } on Exception {
       rethrow;
@@ -80,8 +77,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Future<List<TodoModel>> updateTodos(
-      int index, TodoModel expenseEntity) async {
+  Future<List<TodoModel>> updateTodos(TodoModel expenseEntity) async {
     try {
       await isar.writeAsync((isar) {
         isar.todoModels.put(expenseEntity);
@@ -95,11 +91,8 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   @override
   Stream<List<TodoModel>> getCompleteTodos() async* {
     try {
-      final allTodos = todos
-          .where()
-          .isCompletedEqualTo(true)
-          .watch()
-          .map((_) => todos.where().isCompletedEqualTo(true).findAll());
+      final allTodos =
+          todos.where().isCompletedEqualTo(true).watch(fireImmediately: true);
       yield* allTodos;
     } on Exception {
       rethrow;

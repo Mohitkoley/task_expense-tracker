@@ -1,4 +1,4 @@
-part of 'todo_bloc.dart';
+part of 'todo_cubit.dart';
 
 @immutable
 sealed class TodoState extends Equatable {}
@@ -16,22 +16,19 @@ final class TodoLoading extends TodoState {
 }
 
 final class TodoLoaded extends TodoState {
-  final Stream<List<TodoModel>> unCompletedtodoList;
-  final Stream<List<TodoModel>> completedtodoList;
-
-  TodoLoaded(this.unCompletedtodoList, this.completedtodoList) {
-    // Ensure the stream is a broadcast stream to allow multiple listeners
-    if (!unCompletedtodoList.isBroadcast) {
-      unCompletedtodoList.asBroadcastStream();
-    }
-    if (!completedtodoList.isBroadcast) {
-      completedtodoList.asBroadcastStream();
-    }
-  }
+  final Stream<List<TodoModel>> unCompletedTodo;
+  final Stream<List<TodoModel>> completedTodo;
+  TodoLoaded(
+      Stream<List<TodoModel>> todoList, Stream<List<TodoModel>> completedTodo)
+      : unCompletedTodo = todoList.asBroadcastStream(),
+        completedTodo = completedTodo.asBroadcastStream();
 
   @override
   // TODO: implement props
-  List<Object?> get props => [unCompletedtodoList, completedtodoList];
+  List<Object?> get props => [
+        unCompletedTodo,
+        completedTodo,
+      ];
 
   //copy with
   TodoLoaded copyWith({
@@ -39,8 +36,8 @@ final class TodoLoaded extends TodoState {
     Stream<List<TodoModel>>? completedtodoList,
   }) {
     return TodoLoaded(
-      unCompletedtodoList ?? this.unCompletedtodoList,
-      completedtodoList ?? this.completedtodoList,
+      unCompletedtodoList ?? unCompletedTodo,
+      completedtodoList ?? completedTodo,
     );
   }
 }

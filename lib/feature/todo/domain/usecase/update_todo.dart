@@ -11,7 +11,7 @@ class UpdateTodo implements UseCase<List<TodoModel>, UpdateTodoIndexParams> {
   @override
   Future<List<TodoModel>> call(UpdateTodoIndexParams params) async {
     final expenses =
-        await expenseRepository.updateTodo(params.index, params.expense!);
+        await expenseRepository.updateTodo( params.expense!);
     return expenses.map((expense) => TodoModel.fromEntity(expense)).toList();
   }
 }

@@ -59,9 +59,9 @@ class FlutterLocalNotiServices {
       //open app
       // main();
       await Navigator.push(
-        ExpensesHomepage.openContext,
+        TodoHomepage.openContext,
         MaterialPageRoute<void>(
-            builder: (context) => const AddExpensesScreen()),
+            builder: (context) => const AddOrUpdateTodoScreen()),
       );
     }
   }
@@ -91,9 +91,9 @@ class FlutterLocalNotiServices {
 
     if (notificationResponse.payload == NotificationConst.payload) {
       await Navigator.push(
-        ExpensesHomepage.openContext,
+        TodoHomepage.openContext,
         MaterialPageRoute<void>(
-            builder: (context) => const AddExpensesScreen()),
+            builder: (context) => const AddOrUpdateTodoScreen()),
       );
     }
   }

@@ -14,12 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-part 'todo_event.dart';
+// part 'todo_event.dart';
 part 'todo_state.dart';
 
 @LazySingleton()
-class TodoBloc extends Bloc<TodoEvent, TodoState> {
-  TodoBloc(
+class TodoCubit extends Cubit<TodoState> {
+  TodoCubit(
       {required AddTodos addExpenses,
       required GetAllUnCompleteTodo getAllUnCompletedTodo,
       required UpdateTodo updateExpenses,
@@ -33,26 +33,26 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         _addExpenses = addExpenses,
         _getCompleteTodo = getAllCompletedTodo,
         super(TodoInitial()) {
-    on<TodoEvent>(
-      getUnCompTodo,
-    );
-    on<AddTodoEvent>(addTodo);
-    on<GetUnCompleteTodoEvent>(
-      getUnCompTodo,
-    );
-    on<GetCompleteTodoEvent>(
-      getCompTodo,
-    );
-    on<UpdateTodoEvent>(
-      updateTodo,
-    );
+    // on<TodoEvent>(
+    //   getUnCompTodo,
+    // );
+    // on<AddTodoEvent>(addTodo);
+    // on<GetUnCompleteTodoEvent>(
+    //   getUnCompTodo,
+    // );
+    // on<GetCompleteTodoEvent>(
+    //   getCompTodo,
+    // );
+    // on<UpdateTodoEvent>(
+    //   updateTodo,
+    // );
 
-    on<DeleteTodoEvent>(
-      deleteTodo,
-    );
-    on<FilterTodoEvent>(
-      filterTodo,
-    );
+    // on<DeleteTodoEvent>(
+    //   deleteTodo,
+    // );
+    // on<FilterTodoEvent>(
+    //   filterTodo,
+    // );
   }
   final GetAllUnCompleteTodo _getUnCompleteTodo;
   final GetAllCompleteTodo _getCompleteTodo;
@@ -63,41 +63,36 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   TodoCategory? expenseCategory;
 
-  FutureOr<void> getUnCompTodo(event, emit) async {
-    emit(TodoLoading());
-
+  FutureOr<void> getAllTodo() async {
     try {
-      final expenses = _getUnCompleteTodo(NoParams());
-      if (state is TodoLoaded) {
-        emit((state as TodoLoaded).copyWith(unCompletedtodoList: expenses));
-      }
+      final todos = _getUnCompleteTodo(NoParams());
+      final todoUnCompleted = _getCompleteTodo(NoParams());
+      emit(TodoLoaded(todos, todoUnCompleted));
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
   }
 
-  FutureOr<void> getCompTodo(event, emit) async {
-    emit(TodoLoading());
+  // FutureOr<void> getCompTodo(emit) async {
+  //   try {
+  //     final expenses = _getCompleteTodo(NoParams());
+  //     if (state is TodoLoaded) {
+  //       emit((state as TodoLoaded));
+  //     } else {
+  //       emit(TodoLoaded(expenses));
+  //     }
+  //   } catch (e) {
+  //     emit(TodoErrorState(e.toString()));
+  //   }
+  // }
 
+  Future<void> updateTodo(TodoModel todo) async {
     try {
-      final expenses = _getCompleteTodo(NoParams());
-      if (state is TodoLoaded) {
-        emit((state as TodoLoaded).copyWith(completedtodoList: expenses));
-      }
-    } catch (e) {
-      emit(TodoErrorState(e.toString()));
-    }
-  }
-
-  Future<void> updateTodo(
-      UpdateTodoEvent event, Emitter<TodoState> emit) async {
-    emit(TodoLoading());
-
-    try {
-      _updateExpenses(UpdateTodoIndexParams(
-        index: event.index,
-        expense: event.todo,
-      ));
+      _updateExpenses(
+        UpdateTodoIndexParams(
+          expense: todo,
+        ),
+      );
 
       emit(state as TodoLoaded);
     } catch (e) {
@@ -106,12 +101,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> deleteTodo(
-      DeleteTodoEvent event, Emitter<TodoState> emit) async {
-    emit(TodoLoading());
-
+    TodoModel todo,
+  ) async {
     try {
       await _deleteExpense(AddExpensesParams(
-        expense: event.todo,
+        expense: todo,
       ));
       emit(state as TodoLoaded);
     } catch (e) {
@@ -120,13 +114,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> filterTodo(
-      FilterTodoEvent event, Emitter<TodoState> emit) async {
-    emit(TodoLoading());
-
+      DateTime date, TodoCategory category, Emitter<TodoState> emit) async {
     try {
       await _filterExpenses(FilterTodoParams(
-        date: event.date,
-        category: event.category,
+        date: date,
+        category: category,
       ));
       emit(state as TodoLoaded);
     } catch (e) {
@@ -134,15 +126,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future addTodo(AddTodoEvent event, Emitter<TodoState> emit) async {
-    emit(TodoLoading());
-
+  Future addTodo(TodoModel todo) async {
     try {
       await _addExpenses(AddExpensesParams(
-        expense: event.expense,
+        expense: todo,
       ));
       emit(state as TodoLoaded);
     } catch (e) {
+      debugPrint(e.toString());
       emit(TodoErrorState(e.toString()));
     }
   }

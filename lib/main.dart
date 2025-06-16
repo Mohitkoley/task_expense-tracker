@@ -1,7 +1,7 @@
 import 'package:bloc_test/core/common/screen/error_screen.dart';
 import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/core/service/notification/local_notification_service.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/todo_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,9 +30,9 @@ Future<void> main() async {
         BlocProvider(
             lazy: true,
             create: (_) {
-              final assesmentBloc = getIt<TodoBloc>();
+              final assesmentBloc = getIt<TodoCubit>();
 
-              assesmentBloc.add(GetUnCompleteTodoEvent());
+              assesmentBloc.getAllTodo();
               return assesmentBloc;
 
               // return ExpensesBloc(
@@ -61,6 +61,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: ExpensesHomepage());
+        home: TodoHomepage());
   }
 }

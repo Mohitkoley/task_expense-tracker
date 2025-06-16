@@ -1,28 +1,32 @@
+import 'dart:async';
+
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/core/service/notification/local_notification_service.dart';
 import 'package:bloc_test/core/utils/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
-import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
+import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
-class ExpensesHomepage extends StatefulWidget {
-  ExpensesHomepage({super.key});
+class TodoHomepage extends StatefulWidget {
+  const TodoHomepage({super.key});
   static late BuildContext openContext;
   @override
-  State<ExpensesHomepage> createState() => _ExpensesHomepageState();
+  State<TodoHomepage> createState() => _TodoHomepageState();
 }
 
-class _ExpensesHomepageState extends State<ExpensesHomepage>
+class _TodoHomepageState extends State<TodoHomepage>
     with TickerProviderStateMixin {
+  // StreamController<List<TodoModel>> streamController =
+  //     StreamController<List<TodoModel>>.broadcast();
   void selectNotification(String? payload) async {
     debugPrint('notification payload: $payload');
 
     await Navigator.push(
       context,
-      MaterialPageRoute<void>(builder: (context) => AddExpensesScreen()),
+      MaterialPageRoute<void>(builder: (context) => AddOrUpdateTodoScreen()),
     );
   }
 
@@ -37,9 +41,11 @@ class _ExpensesHomepageState extends State<ExpensesHomepage>
       vsync: this,
     );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await FlutterLocalNotiServices.scheduleDailyNotification(
-        DateTime.now().add(const Duration(seconds: 10)),
-      );
+      // await FlutterLocalNotiServices.scheduleDailyNotification(
+      //   DateTime.now().add(const Duration(seconds: 10)),
+      // );
+
+      context.read<TodoCubit>().getAllTodo();
     });
   }
 
@@ -52,8 +58,9 @@ class _ExpensesHomepageState extends State<ExpensesHomepage>
 
   @override
   Widget build(BuildContext context) {
-    ExpensesHomepage.openContext = context;
+    TodoHomepage.openContext = context;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Todo Homepage'),
       ),
@@ -64,138 +71,79 @@ class _ExpensesHomepageState extends State<ExpensesHomepage>
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
-                return const AddExpensesScreen();
+                return const AddOrUpdateTodoScreen();
               },
             ),
           );
         },
         child: const Icon(Icons.add),
       ),
-      body: BlocConsumer<TodoBloc, TodoState>(
-        listener: (context, state) {
+      body: BlocConsumer<TodoCubit, TodoState>(
+        listener: (context, state) async {
           if (state is TodoErrorState) {
             context.showSnack(state.message);
           }
         },
         buildWhen: (context, state) => state is! TodoErrorState,
         builder: (context, state) {
-          final bloc = context.read<TodoBloc>();
+          final bloc = context.read<TodoCubit>();
           if (state is TodoLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           if (state is TodoLoaded) {
-            final currentState = state;
+            final currentState = state as TodoLoaded;
             return Column(
               children: [
-                // SizedBox(
-                //   height: context.h * 0.07,
-                //   child: ListView(
-                //     scrollDirection: Axis.horizontal,
-                //     children: [
-                //       ElevatedButton(
-                //         onPressed: () {
-                //           // Filter by date
-                //           showDatePicker(
-                //             context: context,
-                //             initialDate: DateTime.now(),
-                //             firstDate: DateTime(2021),
-                //             lastDate: DateTime.now(),
-                //           ).then((value) {
-                //             if (value != null) {
-                //               debugPrint(value.toString());
-                //               bloc.add(FilterTodoEvent(
-                //                 date: value,
-                //               ));
-                //             }
-                //           });
-                //         },
-                //         child: const Text('Filter by Date'),
-                //       ),
-                //       30.wBox,
-                //       SizedBox(
-                //         width: context.w * 0.4,
-                //         height: context.h * 0.05,
-                //         child: DropdownButtonFormField(
-                //           items: TodoCategory.values
-                //               .map((e) => DropdownMenuItem(
-                //                     value: e,
-                //                     child: Text(e.toJson()),
-                //                   ))
-                //               .toList(),
-                //           value: bloc.expenseCategory,
-                //           onChanged: (TodoCategory? value) {
-                //             bloc.expenseCategory = value;
-                //             bloc.add(FilterTodoEvent(
-                //               date: DateTime.now(),
-                //               category: bloc.expenseCategory!,
-                //             ));
-                //           },
-                //         ),
-                //       ),
-
-                //       // clear filter
-                //       if (bloc.expenseCategory != null)
-                //         IconButton.filled(
-                //             iconSize: 30,
-                //             onPressed: () {
-                //               bloc.expenseCategory = null;
-                //               bloc.add(GetUnCompleteTodoEvent());
-                //             },
-                //             icon: Icon(Icons.clear)),
-                //     ],
-                //   ),
-                // ),
-                Container(
-                  width: context.w * 0.5,
-                  child: Theme(
-                    data: ThemeData(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent),
-                    child: TabBar(
-                      controller: tabController,
-                      labelStyle: context.textTheme.bodyMedium,
-                      labelPadding: EdgeInsets.symmetric(horizontal: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 0),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).primaryColor,
-                      indicatorWeight: 1,
-                      //isScrollable: true,
-                      labelColor: Theme.of(context).primaryColor,
-                      //tabAlignment: TabAlignment.start,
-                      unselectedLabelColor: Theme.of(context).disabledColor,
-                      overlayColor: WidgetStateProperty.all(Colors.transparent),
-                      unselectedLabelStyle: context.textTheme.bodyMedium,
-                      tabs: [
-                        Tab(
-                          text: "All",
-                        ),
-                        Tab(text: "Completed")
-                      ],
-                      onTap: (value) {
-                        if (value == 0) {
-                          context
-                              .read<TodoBloc>()
-                              .add(GetUnCompleteTodoEvent());
-                        } else {
-                          context.read<TodoBloc>().add(GetCompleteTodoEvent());
-                        }
-                      },
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TabBar(
+                    dividerColor: Colors.transparent,
+                    controller: tabController,
+                    indicator: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(30)),
+                    unselectedLabelColor: Theme.of(context).primaryColor,
+                    labelColor: Colors.white,
+                    splashBorderRadius: BorderRadius.circular(30),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    unselectedLabelStyle:
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              wordSpacing: 0.1,
+                              fontSize: 18,
+                            ),
+                    labelStyle:
+                        Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              wordSpacing: 0.1,
+                              fontSize: 18,
+                            ),
+                    onTap: (index) {
+                      context.read<TodoCubit>().getAllTodo();
+                    },
+                    tabs: const [
+                      Tab(
+                        text: "All",
+                      ),
+                      Tab(
+                        text: "completed",
+                      ),
+                    ],
                   ),
                 ),
-
                 10.hBox,
                 Expanded(
-                  child: TabBarView(controller: tabController, children: [
-                    TodoListWidget(
-                      todoList: currentState.unCompletedtodoList,
-                    ),
-                    TodoListWidget(
-                      todoList: currentState.completedtodoList,
-                    )
-                  ]),
+                  child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: tabController,
+                      children: [
+                        TodoListWidget(
+                          todoList: currentState.unCompletedTodo,
+                        ),
+                        TodoListWidget(
+                          todoList: currentState.completedTodo,
+                        ),
+                      ]),
                 )
               ],
             );
@@ -216,8 +164,45 @@ class TodoListWidget extends StatelessWidget {
         stream: todoList,
         builder: (context, snap) {
           if (snap.data == null || snap.data!.isEmpty) {
-            return const Center(
-              child: Text("No Todo"),
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Shimmer(
+                    color: Colors.grey[300]!,
+                    child: ListTile(
+                      title: Container(
+                        width: double.infinity,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      subtitle: Container(
+                        width: 100,
+                        height: 12,
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      trailing: Container(
+                        width: 80,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             );
           }
           if (snap.hasError) {
@@ -239,7 +224,7 @@ class TodoListWidget extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) {
                         // Navigate to add expense page
-                        return AddExpensesScreen(
+                        return AddOrUpdateTodoScreen(
                           todoModel: todo,
                           index: index,
                         );
@@ -258,12 +243,9 @@ class TodoListWidget extends StatelessWidget {
                       child: Checkbox.adaptive(
                         value: todo.isCompleted,
                         onChanged: (value) {
-                          context.read<TodoBloc>().add(
-                                UpdateTodoEvent(
-                                  index,
-                                  todo.copyWith(
-                                    isCompleted: value,
-                                  ),
+                          context.read<TodoCubit>().updateTodo(
+                                todo.copyWith(
+                                  isCompleted: value,
                                 ),
                               );
                         },
@@ -273,9 +255,7 @@ class TodoListWidget extends StatelessWidget {
                       icon: const Icon(Icons.delete),
                       onPressed: () {
                         // Delete expense
-                        context.read<TodoBloc>().add(
-                              DeleteTodoEvent(todo),
-                            );
+                        context.read<TodoCubit>().deleteTodo(todo);
                       },
                     ),
                   ],

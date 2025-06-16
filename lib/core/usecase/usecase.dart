@@ -17,10 +17,9 @@ class AddExpensesParams {
 }
 
 class UpdateTodoIndexParams {
-  final int index;
   final TodoEntity? expense;
 
-  UpdateTodoIndexParams({required this.index, this.expense});
+  UpdateTodoIndexParams({this.expense});
 }
 
 class FilterTodoParams {

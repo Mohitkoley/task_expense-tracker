@@ -25,7 +25,7 @@ import '../../feature/todo/domain/usecase/get_all_complete_todo.dart' as _i403;
 import '../../feature/todo/domain/usecase/get_all_uncomplete_todo.dart'
     as _i192;
 import '../../feature/todo/domain/usecase/update_todo.dart' as _i1004;
-import '../../feature/todo/presentation/bloc/todo_bloc.dart' as _i762;
+import '../../feature/todo/presentation/bloc/todo_cubit.dart' as _i762;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -57,7 +57,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1004.UpdateTodo(expenseRepository: gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i326.DeleteExpense>(
         () => _i326.DeleteExpense(expenseRepository: gh<_i969.TodoRepo>()));
-    gh.lazySingleton<_i762.TodoBloc>(() => _i762.TodoBloc(
+    gh.lazySingleton<_i762.TodoCubit>(() => _i762.TodoCubit(
           addExpenses: gh<_i1020.AddTodos>(),
           getAllUnCompletedTodo: gh<_i192.GetAllUnCompleteTodo>(),
           updateExpenses: gh<_i1004.UpdateTodo>(),
