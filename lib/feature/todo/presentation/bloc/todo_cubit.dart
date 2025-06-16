@@ -99,7 +99,7 @@ class TodoCubit extends Cubit<TodoState> {
         ),
       );
 
-      getAllTodo();
+      // getAllTodo();
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -112,7 +112,7 @@ class TodoCubit extends Cubit<TodoState> {
       await _deleteExpense(AddExpensesParams(
         expense: todo,
       ));
-      getAllTodo();
+      // getAllTodo();
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }

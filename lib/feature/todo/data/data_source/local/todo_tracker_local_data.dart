@@ -40,10 +40,10 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Stream<TodoModel?> getCurrentTimeTodo() async* {
+  Stream<TodoModel?> getCurrentTimeTodo() {
     final now = DateTime.now();
     try {
-      yield* todos
+      return todos
           .where()
           .isCompletedEqualTo(false)
           .startDateTimeLessThanOrEqualTo(now)
@@ -76,7 +76,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Stream<List<TodoModel>> getUnCompleteTodos() async* {
+  Stream<List<TodoModel>> getUnCompleteTodos() {
     try {
       final allTodos = todos
           .where()
@@ -87,7 +87,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
           )
           .watch(fireImmediately: true);
 
-      yield* allTodos;
+      return allTodos;
     } on Exception {
       rethrow;
     }
@@ -106,11 +106,11 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Stream<List<TodoModel>> getCompleteTodos() async* {
+  Stream<List<TodoModel>> getCompleteTodos() {
     try {
       final allTodos =
           todos.where().isCompletedEqualTo(true).watch(fireImmediately: true);
-      yield* allTodos;
+      return allTodos;
     } on Exception {
       rethrow;
     }

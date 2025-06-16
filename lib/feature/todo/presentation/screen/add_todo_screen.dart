@@ -148,10 +148,10 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
                   trailing: const Icon(Icons.calendar_today),
                   onTap: () async {
                     final date = await showOmniDateTimePicker(
-                        context: context,
-                        firstDate: DateTime.now(),
-                        initialDate: _startDate);
-                    setEndTime(date);
+                        context: context, initialDate: _startDate);
+                    if (widget.todoModel?.startDateTime == null) {
+                      setEndTime(date);
+                    }
                     if (date != null) {
                       setState(() {
                         _startDate = date;
