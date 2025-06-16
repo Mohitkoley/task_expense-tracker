@@ -9,17 +9,19 @@ class TodoModel extends TodoEntity {
   TodoModel(
       {required this.id,
       required this.kTitle,
-      required this.kDateTime,
+      required this.kStartDateTime,
+      required this.kEndDateTime,
       this.kDescription,
       this.kIsCompleted = false,
       required this.kCategory})
       : super(
           ID: id,
           title: kTitle,
-          dateTime: kDateTime,
+          startDateTime: kStartDateTime,
           description: kDescription,
           isCompleted: kIsCompleted,
           category: kCategory,
+          endDateTime: kEndDateTime,
         );
 
   final int id;
@@ -27,8 +29,10 @@ class TodoModel extends TodoEntity {
   final String kTitle;
   @Index(name: 'description')
   String? kDescription;
-  @Index(name: 'dateTime')
-  final DateTime kDateTime;
+  @Index(name: 'startDateTime')
+  final DateTime kStartDateTime;
+  @Index(name: 'endDateTime')
+  final DateTime kEndDateTime;
   @Index(name: 'isCompleted')
   bool kIsCompleted;
   @Index(name: 'category')
@@ -38,7 +42,8 @@ class TodoModel extends TodoEntity {
     return TodoModel(
       id: json['id'],
       kTitle: json['title'],
-      kDateTime: DateTime.parse(json['dateTime']),
+      kStartDateTime: DateTime.parse(json['startDateTime']),
+      kEndDateTime: DateTime.parse(json['endDateTime']),
       kDescription: json['description'],
       kIsCompleted: json['isCompleted'],
       kCategory: TodoCategory.fromJson(json['category']),
@@ -49,7 +54,7 @@ class TodoModel extends TodoEntity {
     return {
       'id': id,
       'title': super.title,
-      'dateTime': super.dateTime.toIso8601String(),
+      'dateTime': super.startDateTime.toIso8601String(),
       'description': super.description,
       'isCompleted': super.isCompleted,
       'category': super.category.toJson(),
@@ -59,8 +64,9 @@ class TodoModel extends TodoEntity {
   factory TodoModel.fromEntity(TodoEntity entity) {
     return TodoModel(
       id: entity.ID,
+      kEndDateTime: entity.endDateTime,
       kTitle: entity.title,
-      kDateTime: entity.dateTime,
+      kStartDateTime: entity.startDateTime,
       kDescription: entity.description,
       kCategory: entity.category,
       kIsCompleted: entity.isCompleted,
@@ -72,14 +78,16 @@ class TodoModel extends TodoEntity {
     int? id,
     String? title,
     bool? isCompleted,
-    DateTime? dateTime,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
     String? description,
     TodoCategory? category,
   }) {
     return TodoModel(
       id: id ?? this.id,
       kTitle: title ?? kTitle,
-      kDateTime: dateTime ?? kDateTime,
+      kStartDateTime: startDateTime ?? kStartDateTime,
+      kEndDateTime: endDateTime ?? kEndDateTime,
       kIsCompleted: isCompleted ?? kIsCompleted,
       kDescription: description ?? kDescription,
       kCategory: category ?? kCategory,

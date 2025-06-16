@@ -36,7 +36,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<TodoEvent>(
       getUnCompTodo,
     );
-    on<AddTodoEvent>(addExpenseF);
+    on<AddTodoEvent>(addTodo);
     on<GetUnCompleteTodoEvent>(
       getUnCompTodo,
     );
@@ -67,8 +67,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _getUnCompleteTodo(NoParams());
-      emit(TodoLoaded(expenses));
+      final expenses = _getUnCompleteTodo(NoParams());
+      if (state is TodoLoaded) {
+        emit((state as TodoLoaded).copyWith(unCompletedtodoList: expenses));
+      }
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -78,8 +80,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _getCompleteTodo(NoParams());
-      emit(TodoLoaded(expenses));
+      final expenses = _getCompleteTodo(NoParams());
+      if (state is TodoLoaded) {
+        emit((state as TodoLoaded).copyWith(completedtodoList: expenses));
+      }
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -90,11 +94,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _updateExpenses(UpdateTodoIndexParams(
+      _updateExpenses(UpdateTodoIndexParams(
         index: event.index,
         expense: event.todo,
       ));
-      emit(TodoLoaded(expenses));
+
+      emit(state as TodoLoaded);
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -105,10 +110,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _deleteExpense(AddExpensesParams(
+      await _deleteExpense(AddExpensesParams(
         expense: event.todo,
       ));
-      emit(TodoLoaded(expenses));
+      emit(state as TodoLoaded);
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -119,24 +124,24 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(TodoLoading());
 
     try {
-      final expenses = await _filterExpenses(FilterTodoParams(
+      await _filterExpenses(FilterTodoParams(
         date: event.date,
         category: event.category,
       ));
-      emit(TodoLoaded(expenses));
+      emit(state as TodoLoaded);
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
   }
 
-  Future addExpenseF(AddTodoEvent event, Emitter<TodoState> emit) async {
+  Future addTodo(AddTodoEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
 
     try {
-      final expenses = await _addExpenses(AddExpensesParams(
+      await _addExpenses(AddExpensesParams(
         expense: event.expense,
       ));
-      emit(TodoLoaded(expenses));
+      emit(state as TodoLoaded);
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }

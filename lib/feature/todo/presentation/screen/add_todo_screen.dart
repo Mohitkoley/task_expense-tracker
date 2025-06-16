@@ -1,13 +1,14 @@
 import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
+import 'package:bloc_test/core/utils/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
-import 'package:uuid/uuid.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 class AddExpensesScreen extends StatefulWidget {
   static late BuildContext openContext;
@@ -23,10 +24,21 @@ class AddExpensesScreen extends StatefulWidget {
 class _AddExpensesScreenState extends State<AddExpensesScreen> {
   final TextEditingController _titleController = TextEditingController();
   TodoCategory category = TodoCategory.food;
-  var uuid = const Uuid();
+
   final TextEditingController _descriptionController = TextEditingController();
 
-  DateTime _date = DateTime.now();
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  final _formKey = GlobalKey<FormState>();
+
+  void setEndTime(DateTime? dateTime) {
+    if (dateTime != null) {
+      setState(() {
+        _endDate = dateTime.add(const Duration(hours: 1));
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -37,8 +49,8 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
         _titleController.text = widget.todoModel!.title;
         category = widget.todoModel!.category;
         _descriptionController.text = widget.todoModel!.description ?? "";
-        _date = widget.todoModel!.dateTime;
-
+        _startDate = widget.todoModel!.startDateTime;
+        _endDate = widget.todoModel!.endDateTime;
         setState(() {});
       }
     });
@@ -63,106 +75,164 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Add or Edit Todo',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: _titleController,
-              decoration: InputDecoration(
-                hintText: 'Enter Title',
-                labelText: 'Title',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add or Edit Todo',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            16.hBox,
-            TextFormField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                hintText: 'Enter Description',
-                labelText: 'Description',
+              const SizedBox(height: 16),
+
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: _titleController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Enter Title',
+                  labelText: 'Title',
+                ),
               ),
-            ),
-            16.hBox,
-            // create a drop down button
-            DropdownButtonFormField(
-              items: TodoCategory.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.toJson()),
-                      ))
-                  .toList(),
-              value: category,
-              onChanged: (TodoCategory? value) {
-                setState(() {
-                  category = value!;
-                });
-              },
-            ),
-
-            16.hBox,
-
-            //date picker List tile
-            ListTile(
-              title: Text("${_date.toLocal()}".split(' ')[0]),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime.now(),
-                );
-
-                if (date != null) {
+              16.hBox,
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Description',
+                  labelText: 'Description',
+                ),
+              ),
+              16.hBox,
+              // create a drop down button
+              DropdownButtonFormField(
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
+                items: TodoCategory.values
+                    .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e.toJson()),
+                        ))
+                    .toList(),
+                value: category,
+                onChanged: (TodoCategory? value) {
                   setState(() {
-                    _date = date;
+                    category = value!;
                   });
-                }
-              },
-            ),
-
-            16.hBox,
-
-            //save button
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                side: BorderSide(
-                  color: Colors.blue,
-                  width: 2,
-                ),
-                minimumSize: Size(context.w, 50),
+                },
               ),
-              onPressed: () {
-                final isar = getIt<Isar>();
-                final expense = TodoModel(
-                  id: widget.todoModel?.id ?? isar.todoModels.autoIncrement(),
-                  kTitle: _titleController.text.trim(),
-                  kDateTime: _date,
-                  kDescription: _descriptionController.text.trim(),
-                  kCategory: category,
+
+              16.hBox,
+
+              //date picker List tile
+              FormField<DateTime>(validator: (value) {
+                if (value == null) {
+                  return 'Please select a date';
+                }
+                return null;
+              }, builder: (FormFieldState<DateTime> state) {
+                return ListTile(
+                  title: Text(_startDate?.dateTime ?? "Pick Date"),
+                  subtitle: const Text("Start Time"),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final date = await showOmniDateTimePicker(
+                        context: context,
+                        firstDate: DateTime.now(),
+                        initialDate: _startDate);
+                    setEndTime(date);
+                    if (date != null) {
+                      setState(() {
+                        _startDate = date;
+                        state.didChange(date);
+                      });
+                    }
+                  },
                 );
-                context.read<TodoBloc>().add(
-                      widget.todoModel == null
-                          ? AddTodoEvent(expense)
-                          : UpdateTodoEvent(
-                              widget.index!,
-                              expense,
-                            ),
+              }),
+              16.hBox,
+              ListTile(
+                title: Text(_endDate?.dateTime ?? "Pick Date"),
+                subtitle: const Text("End Time"),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () async {
+                  if (_startDate == null) {
+                    context.showSnack('Please select start date first');
+                    return;
+                  }
+
+                  final date = await showOmniDateTimePicker(
+                    context: context,
+                    firstDate: DateTime.now(),
+                    initialDate: _endDate,
+                  );
+
+                  if (date != null) {
+                    if (date != _startDate) {
+                      setState(() {
+                        _endDate = date;
+                      });
+                    } else {
+                      context.showSnack('End date must be after start date');
+                    }
+                  }
+                },
+              ),
+
+              16.hBox,
+
+              //save button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  side: const BorderSide(
+                    color: Colors.blue,
+                    width: 2,
+                  ),
+                  minimumSize: Size(context.w, 50),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    final isar = getIt<Isar>();
+                    debugPrint(
+                        "start date and end date ${_startDate?.dateTime} ${_endDate?.dateTime}");
+                    final expense = TodoModel(
+                      id: widget.todoModel?.id ??
+                          isar.todoModels.autoIncrement(),
+                      kTitle: _titleController.text.trim(),
+                      kStartDateTime: _startDate ?? DateTime.now(),
+                      kEndDateTime: _endDate ?? DateTime.now(),
+                      kDescription: _descriptionController.text.trim(),
+                      kCategory: category,
                     );
-                Navigator.pop(context);
-              },
-              child: const Text('Save'),
-            ),
-          ],
+                    context.read<TodoBloc>().add(
+                          widget.todoModel == null
+                              ? AddTodoEvent(expense)
+                              : UpdateTodoEvent(
+                                  widget.index!,
+                                  expense,
+                                ),
+                        );
+                    Navigator.pop(context);
+                  } else {
+                    context.showSnack("Please fill all the fields");
+                  }
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          ),
         ),
       ),
     );

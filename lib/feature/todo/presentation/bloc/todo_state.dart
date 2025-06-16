@@ -16,13 +16,33 @@ final class TodoLoading extends TodoState {
 }
 
 final class TodoLoaded extends TodoState {
-  final List<TodoModel> todoList;
+  final Stream<List<TodoModel>> unCompletedtodoList;
+  final Stream<List<TodoModel>> completedtodoList;
 
-  TodoLoaded(this.todoList);
+  TodoLoaded(this.unCompletedtodoList, this.completedtodoList) {
+    // Ensure the stream is a broadcast stream to allow multiple listeners
+    if (!unCompletedtodoList.isBroadcast) {
+      unCompletedtodoList.asBroadcastStream();
+    }
+    if (!completedtodoList.isBroadcast) {
+      completedtodoList.asBroadcastStream();
+    }
+  }
 
   @override
   // TODO: implement props
-  List<Object?> get props => [todoList];
+  List<Object?> get props => [unCompletedtodoList, completedtodoList];
+
+  //copy with
+  TodoLoaded copyWith({
+    Stream<List<TodoModel>>? unCompletedtodoList,
+    Stream<List<TodoModel>>? completedtodoList,
+  }) {
+    return TodoLoaded(
+      unCompletedtodoList ?? this.unCompletedtodoList,
+      completedtodoList ?? this.completedtodoList,
+    );
+  }
 }
 
 final class TodoErrorState extends TodoState {

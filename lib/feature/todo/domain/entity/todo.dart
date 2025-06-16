@@ -1,7 +1,8 @@
 class TodoEntity {
   final int ID;
   String title;
-  DateTime dateTime;
+  DateTime startDateTime;
+  DateTime endDateTime;
   String? description;
   TodoCategory category;
   bool isCompleted;
@@ -9,7 +10,8 @@ class TodoEntity {
   TodoEntity({
     required this.ID,
     required this.title,
-    required this.dateTime,
+    required this.startDateTime,
+    required this.endDateTime,
     this.description,
     this.category = TodoCategory.food,
     this.isCompleted = false,

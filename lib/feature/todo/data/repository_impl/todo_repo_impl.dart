@@ -14,10 +14,11 @@ class ExpensesRepoImpl implements TodoRepo {
   Future<List<TodoEntity>> addTodo(TodoEntity todoEntity) {
     return dataSource.addTodos(
       TodoModel(
+        kEndDateTime: todoEntity.endDateTime,
         id: todoEntity.ID,
         kTitle: todoEntity.title,
         kCategory: todoEntity.category,
-        kDateTime: todoEntity.dateTime,
+        kStartDateTime: todoEntity.startDateTime,
         kIsCompleted: todoEntity.isCompleted,
         kDescription: todoEntity.description,
       ),
@@ -28,9 +29,10 @@ class ExpensesRepoImpl implements TodoRepo {
   Future<List<TodoEntity>> deleteTodo(TodoEntity todoEntity) {
     return dataSource.deleteTodos(TodoModel(
       id: todoEntity.ID,
+      kEndDateTime: todoEntity.endDateTime,
       kTitle: todoEntity.title,
       kCategory: todoEntity.category,
-      kDateTime: todoEntity.dateTime,
+      kStartDateTime: todoEntity.startDateTime,
       kIsCompleted: todoEntity.isCompleted,
       kDescription: todoEntity.description,
     ));
@@ -43,7 +45,7 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Future<List<TodoEntity>> getAllUncomplete() {
+  Stream<List<TodoEntity>> getAllUncomplete() {
     return dataSource.getUnCompleteTodos();
   }
 
@@ -52,10 +54,11 @@ class ExpensesRepoImpl implements TodoRepo {
     return dataSource.updateTodos(
       index,
       TodoModel(
+        kEndDateTime: expenseEntity.endDateTime,
         id: expenseEntity.ID,
         kTitle: expenseEntity.title,
         kCategory: expenseEntity.category,
-        kDateTime: expenseEntity.dateTime,
+        kStartDateTime: expenseEntity.startDateTime,
         kIsCompleted: expenseEntity.isCompleted,
         kDescription: expenseEntity.description,
       ),
@@ -63,7 +66,7 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Future<List<TodoEntity>> getAllComplete() {
+  Stream<List<TodoEntity>> getAllComplete() {
     return dataSource.getCompleteTodos();
   }
 }

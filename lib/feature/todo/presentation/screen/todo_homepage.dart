@@ -1,6 +1,7 @@
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/service/notification/local_notification_service.dart';
+import 'package:bloc_test/core/utils/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_bloc.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
@@ -189,10 +190,10 @@ class _ExpensesHomepageState extends State<ExpensesHomepage>
                 Expanded(
                   child: TabBarView(controller: tabController, children: [
                     TodoListWidget(
-                      todoList: currentState.todoList,
+                      todoList: currentState.unCompletedtodoList,
                     ),
                     TodoListWidget(
-                      todoList: currentState.todoList,
+                      todoList: currentState.completedtodoList,
                     )
                   ]),
                 )
@@ -208,28 +209,29 @@ class _ExpensesHomepageState extends State<ExpensesHomepage>
 
 class TodoListWidget extends StatelessWidget {
   const TodoListWidget({super.key, required this.todoList});
-  final List<TodoModel> todoList;
+  final Stream<List<TodoModel>> todoList;
   @override
   Widget build(BuildContext context) {
-    return todoList.isEmpty
-        ? SizedBox(
-            height: context.h * 0.5,
-            width: context.w,
-            child: const Text(
-              'No Todo',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          )
-        : ListView.builder(
+    return StreamBuilder(
+        stream: todoList,
+        builder: (context, snap) {
+          if (snap.data == null || snap.data!.isEmpty) {
+            return const Center(
+              child: Text("No Todo"),
+            );
+          }
+          if (snap.hasError) {
+            return const Center(
+              child: Text("Error"),
+            );
+          }
+          return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount:
-                todoList.length, // Replace with the actual number of expenses
+                snap.data!.length, // Replace with the actual number of expenses
             itemBuilder: (context, index) {
-              final todo = todoList[index];
+              final todo = snap.data![index];
               return ListTile(
                 onTap: () {
                   // Update expense
@@ -247,7 +249,7 @@ class TodoListWidget extends StatelessWidget {
                 },
                 title: Text(todo.title),
                 subtitle: Text(
-                    '${todo.category.name} - ${todo.dateTime.toLocal().toString().split('.')[0]}'),
+                    "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}"),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -281,5 +283,6 @@ class TodoListWidget extends StatelessWidget {
               );
             },
           );
+        });
   }
 }

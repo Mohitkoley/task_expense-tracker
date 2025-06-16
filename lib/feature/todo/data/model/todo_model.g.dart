@@ -29,7 +29,11 @@ const TodoModelSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
-        name: 'kDateTime',
+        name: 'kStartDateTime',
+        type: IsarType.dateTime,
+      ),
+      IsarPropertySchema(
+        name: 'kEndDateTime',
         type: IsarType.dateTime,
       ),
       IsarPropertySchema(
@@ -58,7 +62,11 @@ const TodoModelSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
-        name: 'dateTime',
+        name: 'startDateTime',
+        type: IsarType.dateTime,
+      ),
+      IsarPropertySchema(
+        name: 'endDateTime',
         type: IsarType.dateTime,
       ),
       IsarPropertySchema(
@@ -101,9 +109,17 @@ const TodoModelSchema = IsarGeneratedSchema(
         hash: false,
       ),
       IsarIndexSchema(
-        name: 'dateTime',
+        name: 'startDateTime',
         properties: [
-          "kDateTime",
+          "kStartDateTime",
+        ],
+        unique: false,
+        hash: false,
+      ),
+      IsarIndexSchema(
+        name: 'endDateTime',
+        properties: [
+          "kEndDateTime",
         ],
         unique: false,
         hash: false,
@@ -146,22 +162,27 @@ int serializeTodoModel(IsarWriter writer, TodoModel object) {
     }
   }
   IsarCore.writeLong(
-      writer, 3, object.kDateTime.toUtc().microsecondsSinceEpoch);
-  IsarCore.writeBool(writer, 4, object.kIsCompleted);
-  IsarCore.writeByte(writer, 5, object.kCategory.index);
-  IsarCore.writeLong(writer, 6, object.ID);
-  IsarCore.writeString(writer, 7, object.title);
-  IsarCore.writeLong(writer, 8, object.dateTime.toUtc().microsecondsSinceEpoch);
+      writer, 3, object.kStartDateTime.toUtc().microsecondsSinceEpoch);
+  IsarCore.writeLong(
+      writer, 4, object.kEndDateTime.toUtc().microsecondsSinceEpoch);
+  IsarCore.writeBool(writer, 5, object.kIsCompleted);
+  IsarCore.writeByte(writer, 6, object.kCategory.index);
+  IsarCore.writeLong(writer, 7, object.ID);
+  IsarCore.writeString(writer, 8, object.title);
+  IsarCore.writeLong(
+      writer, 9, object.startDateTime.toUtc().microsecondsSinceEpoch);
+  IsarCore.writeLong(
+      writer, 10, object.endDateTime.toUtc().microsecondsSinceEpoch);
   {
     final value = object.description;
     if (value == null) {
-      IsarCore.writeNull(writer, 9);
+      IsarCore.writeNull(writer, 11);
     } else {
-      IsarCore.writeString(writer, 9, value);
+      IsarCore.writeString(writer, 11, value);
     }
   }
-  IsarCore.writeByte(writer, 10, object.category.index);
-  IsarCore.writeBool(writer, 11, object.isCompleted);
+  IsarCore.writeByte(writer, 12, object.category.index);
+  IsarCore.writeBool(writer, 13, object.isCompleted);
   return object.id;
 }
 
@@ -173,25 +194,36 @@ TodoModel deserializeTodoModel(IsarReader reader) {
   _kTitle = IsarCore.readString(reader, 1) ?? '';
   final String? _kDescription;
   _kDescription = IsarCore.readString(reader, 2);
-  final DateTime _kDateTime;
+  final DateTime _kStartDateTime;
   {
     final value = IsarCore.readLong(reader, 3);
     if (value == -9223372036854775808) {
-      _kDateTime =
+      _kStartDateTime =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
     } else {
-      _kDateTime =
+      _kStartDateTime =
+          DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
+    }
+  }
+  final DateTime _kEndDateTime;
+  {
+    final value = IsarCore.readLong(reader, 4);
+    if (value == -9223372036854775808) {
+      _kEndDateTime =
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
+    } else {
+      _kEndDateTime =
           DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
     }
   }
   final bool _kIsCompleted;
-  _kIsCompleted = IsarCore.readBool(reader, 4);
+  _kIsCompleted = IsarCore.readBool(reader, 5);
   final TodoCategory _kCategory;
   {
-    if (IsarCore.readNull(reader, 5)) {
+    if (IsarCore.readNull(reader, 6)) {
       _kCategory = TodoCategory.food;
     } else {
-      _kCategory = _todoModelKCategory[IsarCore.readByte(reader, 5)] ??
+      _kCategory = _todoModelKCategory[IsarCore.readByte(reader, 6)] ??
           TodoCategory.food;
     }
   }
@@ -199,31 +231,42 @@ TodoModel deserializeTodoModel(IsarReader reader) {
     id: _id,
     kTitle: _kTitle,
     kDescription: _kDescription,
-    kDateTime: _kDateTime,
+    kStartDateTime: _kStartDateTime,
+    kEndDateTime: _kEndDateTime,
     kIsCompleted: _kIsCompleted,
     kCategory: _kCategory,
   );
-  object.title = IsarCore.readString(reader, 7) ?? '';
+  object.title = IsarCore.readString(reader, 8) ?? '';
   {
-    final value = IsarCore.readLong(reader, 8);
+    final value = IsarCore.readLong(reader, 9);
     if (value == -9223372036854775808) {
-      object.dateTime =
+      object.startDateTime =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
     } else {
-      object.dateTime =
+      object.startDateTime =
           DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
     }
   }
-  object.description = IsarCore.readString(reader, 9);
   {
-    if (IsarCore.readNull(reader, 10)) {
+    final value = IsarCore.readLong(reader, 10);
+    if (value == -9223372036854775808) {
+      object.endDateTime =
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
+    } else {
+      object.endDateTime =
+          DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
+    }
+  }
+  object.description = IsarCore.readString(reader, 11);
+  {
+    if (IsarCore.readNull(reader, 12)) {
       object.category = TodoCategory.food;
     } else {
-      object.category = _todoModelCategory[IsarCore.readByte(reader, 10)] ??
+      object.category = _todoModelCategory[IsarCore.readByte(reader, 12)] ??
           TodoCategory.food;
     }
   }
-  object.isCompleted = IsarCore.readBool(reader, 11);
+  object.isCompleted = IsarCore.readBool(reader, 13);
   return object;
 }
 
@@ -247,23 +290,8 @@ dynamic deserializeTodoModelProp(IsarReader reader, int property) {
         }
       }
     case 4:
-      return IsarCore.readBool(reader, 4);
-    case 5:
       {
-        if (IsarCore.readNull(reader, 5)) {
-          return TodoCategory.food;
-        } else {
-          return _todoModelKCategory[IsarCore.readByte(reader, 5)] ??
-              TodoCategory.food;
-        }
-      }
-    case 6:
-      return IsarCore.readLong(reader, 6);
-    case 7:
-      return IsarCore.readString(reader, 7) ?? '';
-    case 8:
-      {
-        final value = IsarCore.readLong(reader, 8);
+        final value = IsarCore.readLong(reader, 4);
         if (value == -9223372036854775808) {
           return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
         } else {
@@ -271,19 +299,54 @@ dynamic deserializeTodoModelProp(IsarReader reader, int property) {
               .toLocal();
         }
       }
-    case 9:
-      return IsarCore.readString(reader, 9);
-    case 10:
+    case 5:
+      return IsarCore.readBool(reader, 5);
+    case 6:
       {
-        if (IsarCore.readNull(reader, 10)) {
+        if (IsarCore.readNull(reader, 6)) {
           return TodoCategory.food;
         } else {
-          return _todoModelCategory[IsarCore.readByte(reader, 10)] ??
+          return _todoModelKCategory[IsarCore.readByte(reader, 6)] ??
               TodoCategory.food;
         }
       }
+    case 7:
+      return IsarCore.readLong(reader, 7);
+    case 8:
+      return IsarCore.readString(reader, 8) ?? '';
+    case 9:
+      {
+        final value = IsarCore.readLong(reader, 9);
+        if (value == -9223372036854775808) {
+          return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true)
+              .toLocal();
+        }
+      }
+    case 10:
+      {
+        final value = IsarCore.readLong(reader, 10);
+        if (value == -9223372036854775808) {
+          return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true)
+              .toLocal();
+        }
+      }
     case 11:
-      return IsarCore.readBool(reader, 11);
+      return IsarCore.readString(reader, 11);
+    case 12:
+      {
+        if (IsarCore.readNull(reader, 12)) {
+          return TodoCategory.food;
+        } else {
+          return _todoModelCategory[IsarCore.readByte(reader, 12)] ??
+              TodoCategory.food;
+        }
+      }
+    case 13:
+      return IsarCore.readBool(reader, 13);
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -294,12 +357,14 @@ sealed class _TodoModelUpdate {
     required int id,
     String? kTitle,
     String? kDescription,
-    DateTime? kDateTime,
+    DateTime? kStartDateTime,
+    DateTime? kEndDateTime,
     bool? kIsCompleted,
     TodoCategory? kCategory,
     int? ID,
     String? title,
-    DateTime? dateTime,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
     String? description,
     TodoCategory? category,
     bool? isCompleted,
@@ -316,12 +381,14 @@ class _TodoModelUpdateImpl implements _TodoModelUpdate {
     required int id,
     Object? kTitle = ignore,
     Object? kDescription = ignore,
-    Object? kDateTime = ignore,
+    Object? kStartDateTime = ignore,
+    Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
     Object? kCategory = ignore,
     Object? ID = ignore,
     Object? title = ignore,
-    Object? dateTime = ignore,
+    Object? startDateTime = ignore,
+    Object? endDateTime = ignore,
     Object? description = ignore,
     Object? category = ignore,
     Object? isCompleted = ignore,
@@ -331,15 +398,17 @@ class _TodoModelUpdateImpl implements _TodoModelUpdate {
         ], {
           if (kTitle != ignore) 1: kTitle as String?,
           if (kDescription != ignore) 2: kDescription as String?,
-          if (kDateTime != ignore) 3: kDateTime as DateTime?,
-          if (kIsCompleted != ignore) 4: kIsCompleted as bool?,
-          if (kCategory != ignore) 5: kCategory as TodoCategory?,
-          if (ID != ignore) 6: ID as int?,
-          if (title != ignore) 7: title as String?,
-          if (dateTime != ignore) 8: dateTime as DateTime?,
-          if (description != ignore) 9: description as String?,
-          if (category != ignore) 10: category as TodoCategory?,
-          if (isCompleted != ignore) 11: isCompleted as bool?,
+          if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
+          if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
+          if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
+          if (kCategory != ignore) 6: kCategory as TodoCategory?,
+          if (ID != ignore) 7: ID as int?,
+          if (title != ignore) 8: title as String?,
+          if (startDateTime != ignore) 9: startDateTime as DateTime?,
+          if (endDateTime != ignore) 10: endDateTime as DateTime?,
+          if (description != ignore) 11: description as String?,
+          if (category != ignore) 12: category as TodoCategory?,
+          if (isCompleted != ignore) 13: isCompleted as bool?,
         }) >
         0;
   }
@@ -350,12 +419,14 @@ sealed class _TodoModelUpdateAll {
     required List<int> id,
     String? kTitle,
     String? kDescription,
-    DateTime? kDateTime,
+    DateTime? kStartDateTime,
+    DateTime? kEndDateTime,
     bool? kIsCompleted,
     TodoCategory? kCategory,
     int? ID,
     String? title,
-    DateTime? dateTime,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
     String? description,
     TodoCategory? category,
     bool? isCompleted,
@@ -372,12 +443,14 @@ class _TodoModelUpdateAllImpl implements _TodoModelUpdateAll {
     required List<int> id,
     Object? kTitle = ignore,
     Object? kDescription = ignore,
-    Object? kDateTime = ignore,
+    Object? kStartDateTime = ignore,
+    Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
     Object? kCategory = ignore,
     Object? ID = ignore,
     Object? title = ignore,
-    Object? dateTime = ignore,
+    Object? startDateTime = ignore,
+    Object? endDateTime = ignore,
     Object? description = ignore,
     Object? category = ignore,
     Object? isCompleted = ignore,
@@ -385,15 +458,17 @@ class _TodoModelUpdateAllImpl implements _TodoModelUpdateAll {
     return collection.updateProperties(id, {
       if (kTitle != ignore) 1: kTitle as String?,
       if (kDescription != ignore) 2: kDescription as String?,
-      if (kDateTime != ignore) 3: kDateTime as DateTime?,
-      if (kIsCompleted != ignore) 4: kIsCompleted as bool?,
-      if (kCategory != ignore) 5: kCategory as TodoCategory?,
-      if (ID != ignore) 6: ID as int?,
-      if (title != ignore) 7: title as String?,
-      if (dateTime != ignore) 8: dateTime as DateTime?,
-      if (description != ignore) 9: description as String?,
-      if (category != ignore) 10: category as TodoCategory?,
-      if (isCompleted != ignore) 11: isCompleted as bool?,
+      if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
+      if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
+      if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
+      if (kCategory != ignore) 6: kCategory as TodoCategory?,
+      if (ID != ignore) 7: ID as int?,
+      if (title != ignore) 8: title as String?,
+      if (startDateTime != ignore) 9: startDateTime as DateTime?,
+      if (endDateTime != ignore) 10: endDateTime as DateTime?,
+      if (description != ignore) 11: description as String?,
+      if (category != ignore) 12: category as TodoCategory?,
+      if (isCompleted != ignore) 13: isCompleted as bool?,
     });
   }
 }
@@ -408,12 +483,14 @@ sealed class _TodoModelQueryUpdate {
   int call({
     String? kTitle,
     String? kDescription,
-    DateTime? kDateTime,
+    DateTime? kStartDateTime,
+    DateTime? kEndDateTime,
     bool? kIsCompleted,
     TodoCategory? kCategory,
     int? ID,
     String? title,
-    DateTime? dateTime,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
     String? description,
     TodoCategory? category,
     bool? isCompleted,
@@ -430,12 +507,14 @@ class _TodoModelQueryUpdateImpl implements _TodoModelQueryUpdate {
   int call({
     Object? kTitle = ignore,
     Object? kDescription = ignore,
-    Object? kDateTime = ignore,
+    Object? kStartDateTime = ignore,
+    Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
     Object? kCategory = ignore,
     Object? ID = ignore,
     Object? title = ignore,
-    Object? dateTime = ignore,
+    Object? startDateTime = ignore,
+    Object? endDateTime = ignore,
     Object? description = ignore,
     Object? category = ignore,
     Object? isCompleted = ignore,
@@ -443,15 +522,17 @@ class _TodoModelQueryUpdateImpl implements _TodoModelQueryUpdate {
     return query.updateProperties(limit: limit, {
       if (kTitle != ignore) 1: kTitle as String?,
       if (kDescription != ignore) 2: kDescription as String?,
-      if (kDateTime != ignore) 3: kDateTime as DateTime?,
-      if (kIsCompleted != ignore) 4: kIsCompleted as bool?,
-      if (kCategory != ignore) 5: kCategory as TodoCategory?,
-      if (ID != ignore) 6: ID as int?,
-      if (title != ignore) 7: title as String?,
-      if (dateTime != ignore) 8: dateTime as DateTime?,
-      if (description != ignore) 9: description as String?,
-      if (category != ignore) 10: category as TodoCategory?,
-      if (isCompleted != ignore) 11: isCompleted as bool?,
+      if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
+      if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
+      if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
+      if (kCategory != ignore) 6: kCategory as TodoCategory?,
+      if (ID != ignore) 7: ID as int?,
+      if (title != ignore) 8: title as String?,
+      if (startDateTime != ignore) 9: startDateTime as DateTime?,
+      if (endDateTime != ignore) 10: endDateTime as DateTime?,
+      if (description != ignore) 11: description as String?,
+      if (category != ignore) 12: category as TodoCategory?,
+      if (isCompleted != ignore) 13: isCompleted as bool?,
     });
   }
 }
@@ -473,12 +554,14 @@ class _TodoModelQueryBuilderUpdateImpl implements _TodoModelQueryUpdate {
   int call({
     Object? kTitle = ignore,
     Object? kDescription = ignore,
-    Object? kDateTime = ignore,
+    Object? kStartDateTime = ignore,
+    Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
     Object? kCategory = ignore,
     Object? ID = ignore,
     Object? title = ignore,
-    Object? dateTime = ignore,
+    Object? startDateTime = ignore,
+    Object? endDateTime = ignore,
     Object? description = ignore,
     Object? category = ignore,
     Object? isCompleted = ignore,
@@ -488,15 +571,17 @@ class _TodoModelQueryBuilderUpdateImpl implements _TodoModelQueryUpdate {
       return q.updateProperties(limit: limit, {
         if (kTitle != ignore) 1: kTitle as String?,
         if (kDescription != ignore) 2: kDescription as String?,
-        if (kDateTime != ignore) 3: kDateTime as DateTime?,
-        if (kIsCompleted != ignore) 4: kIsCompleted as bool?,
-        if (kCategory != ignore) 5: kCategory as TodoCategory?,
-        if (ID != ignore) 6: ID as int?,
-        if (title != ignore) 7: title as String?,
-        if (dateTime != ignore) 8: dateTime as DateTime?,
-        if (description != ignore) 9: description as String?,
-        if (category != ignore) 10: category as TodoCategory?,
-        if (isCompleted != ignore) 11: isCompleted as bool?,
+        if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
+        if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
+        if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
+        if (kCategory != ignore) 6: kCategory as TodoCategory?,
+        if (ID != ignore) 7: ID as int?,
+        if (title != ignore) 8: title as String?,
+        if (startDateTime != ignore) 9: startDateTime as DateTime?,
+        if (endDateTime != ignore) 10: endDateTime as DateTime?,
+        if (description != ignore) 11: description as String?,
+        if (category != ignore) 12: category as TodoCategory?,
+        if (isCompleted != ignore) 13: isCompleted as bool?,
       });
     } finally {
       q.close();
@@ -981,7 +1066,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kDateTimeEqualTo(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kStartDateTimeEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
@@ -995,7 +1081,7 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kDateTimeGreaterThan(
+      kStartDateTimeGreaterThan(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
@@ -1009,7 +1095,7 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kDateTimeGreaterThanOrEqualTo(
+      kStartDateTimeGreaterThanOrEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
@@ -1022,7 +1108,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kDateTimeLessThan(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kStartDateTimeLessThan(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
@@ -1036,7 +1123,7 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kDateTimeLessThanOrEqualTo(
+      kStartDateTimeLessThanOrEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
@@ -1049,7 +1136,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kDateTimeBetween(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kStartDateTimeBetween(
     DateTime lower,
     DateTime upper,
   ) {
@@ -1064,13 +1152,97 @@ extension TodoModelQueryFilter
     });
   }
 
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kEndDateTimeEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 4,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kEndDateTimeGreaterThan(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 4,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kEndDateTimeGreaterThanOrEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 4,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kEndDateTimeLessThan(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 4,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      kEndDateTimeLessThanOrEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 4,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kEndDateTimeBetween(
+    DateTime lower,
+    DateTime upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 4,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kIsCompletedEqualTo(
     bool value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -1083,7 +1255,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 5,
+          property: 6,
           value: value.index,
         ),
       );
@@ -1097,7 +1269,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 5,
+          property: 6,
           value: value.index,
         ),
       );
@@ -1111,7 +1283,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value.index,
         ),
       );
@@ -1124,7 +1296,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 5,
+          property: 6,
           value: value.index,
         ),
       );
@@ -1138,7 +1310,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value.index,
         ),
       );
@@ -1152,7 +1324,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 5,
+          property: 6,
           lower: lower.index,
           upper: upper.index,
         ),
@@ -1166,7 +1338,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 6,
+          property: 7,
           value: value,
         ),
       );
@@ -1179,7 +1351,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 6,
+          property: 7,
           value: value,
         ),
       );
@@ -1193,7 +1365,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 6,
+          property: 7,
           value: value,
         ),
       );
@@ -1206,7 +1378,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 6,
+          property: 7,
           value: value,
         ),
       );
@@ -1219,7 +1391,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 6,
+          property: 7,
           value: value,
         ),
       );
@@ -1233,7 +1405,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 6,
+          property: 7,
           lower: lower,
           upper: upper,
         ),
@@ -1248,7 +1420,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1263,7 +1435,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1279,7 +1451,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1294,7 +1466,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1310,7 +1482,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1326,7 +1498,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 7,
+          property: 8,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1342,7 +1514,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1357,7 +1529,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1371,7 +1543,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 7,
+          property: 8,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1385,7 +1557,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 7,
+          property: 8,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1397,7 +1569,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 7,
+          property: 8,
           value: '',
         ),
       );
@@ -1408,33 +1580,35 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 7,
+          property: 8,
           value: '',
         ),
       );
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> dateTimeEqualTo(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      startDateTimeEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 8,
+          property: 9,
           value: value,
         ),
       );
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> dateTimeGreaterThan(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      startDateTimeGreaterThan(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 8,
+          property: 9,
           value: value,
         ),
       );
@@ -1442,26 +1616,13 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      dateTimeGreaterThanOrEqualTo(
+      startDateTimeGreaterThanOrEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 8,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> dateTimeLessThan(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 8,
+          property: 9,
           value: value,
         ),
       );
@@ -1469,27 +1630,125 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      dateTimeLessThanOrEqualTo(
+      startDateTimeLessThan(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 8,
+        LessCondition(
+          property: 9,
           value: value,
         ),
       );
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> dateTimeBetween(
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      startDateTimeLessThanOrEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 9,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      startDateTimeBetween(
     DateTime lower,
     DateTime upper,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 8,
+          property: 9,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> endDateTimeEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      endDateTimeGreaterThan(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      endDateTimeGreaterThanOrEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> endDateTimeLessThan(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
+      endDateTimeLessThanOrEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 10,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> endDateTimeBetween(
+    DateTime lower,
+    DateTime upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 10,
           lower: lower,
           upper: upper,
         ),
@@ -1500,14 +1759,14 @@ extension TodoModelQueryFilter
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
       descriptionIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 9));
+      return query.addFilterCondition(const IsNullCondition(property: 11));
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
       descriptionIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 9));
+      return query.addFilterCondition(const IsNullCondition(property: 11));
     });
   }
 
@@ -1518,7 +1777,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1534,7 +1793,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1550,7 +1809,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1565,7 +1824,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1581,7 +1840,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1597,7 +1856,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 9,
+          property: 11,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1614,7 +1873,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1629,7 +1888,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1643,7 +1902,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 9,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1657,7 +1916,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 9,
+          property: 11,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1670,7 +1929,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 9,
+          property: 11,
           value: '',
         ),
       );
@@ -1682,7 +1941,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 9,
+          property: 11,
           value: '',
         ),
       );
@@ -1695,7 +1954,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 10,
+          property: 12,
           value: value.index,
         ),
       );
@@ -1708,7 +1967,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 10,
+          property: 12,
           value: value.index,
         ),
       );
@@ -1722,7 +1981,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 10,
+          property: 12,
           value: value.index,
         ),
       );
@@ -1735,7 +1994,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 10,
+          property: 12,
           value: value.index,
         ),
       );
@@ -1749,7 +2008,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 10,
+          property: 12,
           value: value.index,
         ),
       );
@@ -1763,7 +2022,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 10,
+          property: 12,
           lower: lower.index,
           upper: upper.index,
         ),
@@ -1777,7 +2036,7 @@ extension TodoModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 11,
+          property: 13,
           value: value,
         ),
       );
@@ -1843,51 +2102,63 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKStartDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKDateTimeDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKStartDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKIsCompleted() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKEndDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKIsCompletedDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKEndDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKIsCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByID() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByIDDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategoryDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByIDDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
@@ -1895,7 +2166,7 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        7,
+        8,
         caseSensitive: caseSensitive,
       );
     });
@@ -1905,22 +2176,34 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        7,
+        8,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByStartDateTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(9);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByDateTimeDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByStartDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(9, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByEndDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByEndDateTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10, sort: Sort.desc);
     });
   }
 
@@ -1928,7 +2211,7 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        9,
+        11,
         caseSensitive: caseSensitive,
       );
     });
@@ -1938,7 +2221,7 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        9,
+        11,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1947,25 +2230,25 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByCategory() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10);
+      return query.addSortBy(12);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByCategoryDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc);
+      return query.addSortBy(12, sort: Sort.desc);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByIsCompleted() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11);
+      return query.addSortBy(13);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, sort: Sort.desc);
+      return query.addSortBy(13, sort: Sort.desc);
     });
   }
 }
@@ -2012,115 +2295,139 @@ extension TodoModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKStartDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKDateTimeDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKStartDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKIsCompleted() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKEndDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKIsCompletedDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKEndDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKIsCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByID() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByIDDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategoryDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByIDDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(7, caseSensitive: caseSensitive);
+      return query.addSortBy(8, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByTitleDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(7, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(8, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByStartDateTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(9);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByDateTimeDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByStartDateTimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(9, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByEndDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByEndDateTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10, sort: Sort.desc);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, caseSensitive: caseSensitive);
+      return query.addSortBy(11, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByDescriptionDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByCategory() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10);
+      return query.addSortBy(12);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByCategoryDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc);
+      return query.addSortBy(12, sort: Sort.desc);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByIsCompleted() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11);
+      return query.addSortBy(13);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByIsCompletedDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, sort: Sort.desc);
+      return query.addSortBy(13, sort: Sort.desc);
     });
   }
 }
@@ -2141,59 +2448,72 @@ extension TodoModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct>
+      distinctByKStartDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(3);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKIsCompleted() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKEndDateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(4);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKIsCompleted() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(5);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByID() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(6);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(7);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(7, caseSensitive: caseSensitive);
+      return query.addDistinctBy(8, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByDateTime() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByStartDateTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(8);
+      return query.addDistinctBy(9);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByEndDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(10);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(9, caseSensitive: caseSensitive);
+      return query.addDistinctBy(11, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByCategory() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(10);
+      return query.addDistinctBy(12);
     });
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByIsCompleted() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(11);
+      return query.addDistinctBy(13);
     });
   }
 }
@@ -2218,57 +2538,69 @@ extension TodoModelQueryProperty1
     });
   }
 
-  QueryBuilder<TodoModel, DateTime, QAfterProperty> kDateTimeProperty() {
+  QueryBuilder<TodoModel, DateTime, QAfterProperty> kStartDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<TodoModel, bool, QAfterProperty> kIsCompletedProperty() {
+  QueryBuilder<TodoModel, DateTime, QAfterProperty> kEndDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
   }
 
-  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> kCategoryProperty() {
+  QueryBuilder<TodoModel, bool, QAfterProperty> kIsCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
     });
   }
 
-  QueryBuilder<TodoModel, int, QAfterProperty> IDProperty() {
+  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> kCategoryProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
   }
 
-  QueryBuilder<TodoModel, String, QAfterProperty> titleProperty() {
+  QueryBuilder<TodoModel, int, QAfterProperty> IDProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(7);
     });
   }
 
-  QueryBuilder<TodoModel, DateTime, QAfterProperty> dateTimeProperty() {
+  QueryBuilder<TodoModel, String, QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(8);
     });
   }
 
-  QueryBuilder<TodoModel, String?, QAfterProperty> descriptionProperty() {
+  QueryBuilder<TodoModel, DateTime, QAfterProperty> startDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(9);
     });
   }
 
-  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> categoryProperty() {
+  QueryBuilder<TodoModel, DateTime, QAfterProperty> endDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
   }
 
-  QueryBuilder<TodoModel, bool, QAfterProperty> isCompletedProperty() {
+  QueryBuilder<TodoModel, String?, QAfterProperty> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> categoryProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
+    });
+  }
+
+  QueryBuilder<TodoModel, bool, QAfterProperty> isCompletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(13);
     });
   }
 }
@@ -2293,59 +2625,74 @@ extension TodoModelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty> kDateTimeProperty() {
+  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty>
+      kStartDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<TodoModel, (R, bool), QAfterProperty> kIsCompletedProperty() {
+  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty>
+      kEndDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<TodoModel, (R, bool), QAfterProperty> kIsCompletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
     });
   }
 
   QueryBuilder<TodoModel, (R, TodoCategory), QAfterProperty>
       kCategoryProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
+      return query.addProperty(6);
     });
   }
 
   QueryBuilder<TodoModel, (R, int), QAfterProperty> IDProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
+      return query.addProperty(7);
     });
   }
 
   QueryBuilder<TodoModel, (R, String), QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(7);
+      return query.addProperty(8);
     });
   }
 
-  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty> dateTimeProperty() {
+  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty>
+      startDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<TodoModel, (R, DateTime), QAfterProperty> endDateTimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
     });
   }
 
   QueryBuilder<TodoModel, (R, String?), QAfterProperty> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
+      return query.addProperty(11);
     });
   }
 
   QueryBuilder<TodoModel, (R, TodoCategory), QAfterProperty>
       categoryProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
+      return query.addProperty(12);
     });
   }
 
   QueryBuilder<TodoModel, (R, bool), QAfterProperty> isCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(11);
+      return query.addProperty(13);
     });
   }
 }
@@ -2371,60 +2718,76 @@ extension TodoModelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations> kDateTimeProperty() {
+  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations>
+      kStartDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<TodoModel, (R1, R2, bool), QOperations> kIsCompletedProperty() {
+  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations>
+      kEndDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<TodoModel, (R1, R2, bool), QOperations> kIsCompletedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, TodoCategory), QOperations>
       kCategoryProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
+      return query.addProperty(6);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, int), QOperations> IDProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
+      return query.addProperty(7);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, String), QOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(7);
+      return query.addProperty(8);
     });
   }
 
-  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations> dateTimeProperty() {
+  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations>
+      startDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<TodoModel, (R1, R2, DateTime), QOperations>
+      endDateTimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, String?), QOperations>
       descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
+      return query.addProperty(11);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, TodoCategory), QOperations>
       categoryProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
+      return query.addProperty(12);
     });
   }
 
   QueryBuilder<TodoModel, (R1, R2, bool), QOperations> isCompletedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(11);
+      return query.addProperty(13);
     });
   }
 }

@@ -1,8 +1,8 @@
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 
 abstract interface class TodoRepo {
-  Future<List<TodoEntity>> getAllUncomplete();
-  Future<List<TodoEntity>> getAllComplete();
+  Stream<List<TodoEntity>> getAllUncomplete();
+  Stream<List<TodoEntity>> getAllComplete();
   Future<List<TodoEntity>> addTodo(TodoEntity expenseEntity);
   Future<List<TodoEntity>> updateTodo(int index, TodoEntity expenseEntity);
   Future<List<TodoEntity>> deleteTodo(TodoEntity expenseEntity);

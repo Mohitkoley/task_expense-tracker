@@ -4,14 +4,16 @@ import 'package:bloc_test/feature/todo/domain/repository/todo_repo.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class GetAllCompleteTodo implements UseCase<List<TodoModel>, NoParams> {
+class GetAllCompleteTodo implements UseCaseStream<List<TodoModel>, NoParams> {
   final TodoRepo repository;
 
   GetAllCompleteTodo(this.repository);
 
   @override
-  Future<List<TodoModel>> call(NoParams params) async {
-    final expenses = await repository.getAllComplete();
-    return expenses.map((expense) => TodoModel.fromEntity(expense)).toList();
+  Stream<List<TodoModel>> call(NoParams params) {
+    return repository.getAllComplete().map(
+          (expenses) =>
+              expenses.map((expense) => TodoModel.fromEntity(expense)).toList(),
+        );
   }
 }

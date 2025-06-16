@@ -20,7 +20,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getUnCompleteTodos();
+    return getUnCompleteTodos().last;
   }
 
   @override
@@ -32,16 +32,16 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getUnCompleteTodos();
+    return getUnCompleteTodos().last;
   }
 
   @override
   Future<List<TodoModel>> filterTodos(
       {required DateTime date, required TodoCategory category}) async {
-    List<TodoModel> todos = await getUnCompleteTodos();
+    List<TodoModel> todos = await getUnCompleteTodos().last;
     try {
       for (int i = 0; i < todos.length; i++) {
-        if (DateUtils.isSameDay(todos[i].kDateTime, date) ||
+        if (DateUtils.isSameDay(todos[i].kStartDateTime, date) ||
             todos[i].category == category) {
           todos.add(todos[i]);
         }
@@ -55,23 +55,28 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Future<List<TodoModel>> getUnCompleteTodos() async {
-    List<TodoModel> expenses = [];
+  Stream<List<TodoModel>> getUnCompleteTodos() async* {
     try {
-      if (todos.count() == 0) {
-        return expenses;
-      }
       final allTodos = todos
           .where()
           .isCompletedEqualTo(false)
-          .dateTimeBetween(DateTime.now().subtract(const Duration(days: 1)),
-              DateTime.now().add(const Duration(days: 1)))
-          .findAll();
-      expenses.addAll(allTodos);
+          .startDateTimeBetween(
+            DateTime.now().subtract(const Duration(days: 1)),
+            DateTime.now(),
+          )
+          .watch()
+          .map((_) => todos
+              .where()
+              .isCompletedEqualTo(false)
+              .startDateTimeBetween(
+                DateTime.now().subtract(const Duration(days: 1)),
+                DateTime.now(),
+              )
+              .findAll());
+      yield* allTodos;
     } on Exception {
       rethrow;
     }
-    return expenses;
   }
 
   @override
@@ -84,25 +89,20 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     } on Exception {
       rethrow;
     }
-    return getUnCompleteTodos();
+    return getUnCompleteTodos().last;
   }
 
   @override
-  Future<List<TodoModel>> getCompleteTodos() async {
-    List<TodoModel> expenses = [];
+  Stream<List<TodoModel>> getCompleteTodos() async* {
     try {
-      if (todos.count() == 0) {
-        return expenses;
-      }
-      List<TodoModel> allTodos =
-          todos.where().isCompletedEqualTo(true).findAll();
-      allTodos = allTodos
-          .where((ele) => DateUtils.isSameDay(ele.dateTime, DateTime.now()))
-          .toList();
-      expenses.addAll(allTodos);
+      final allTodos = todos
+          .where()
+          .isCompletedEqualTo(true)
+          .watch()
+          .map((_) => todos.where().isCompletedEqualTo(true).findAll());
+      yield* allTodos;
     } on Exception {
       rethrow;
     }
-    return expenses;
   }
 }
