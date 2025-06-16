@@ -303,7 +303,13 @@ class TodoListWidget extends StatelessWidget {
                     ),
                   );
                 },
-                title: Text(todo.title, style: const TextStyle(fontSize: 20)),
+                title: Text(todo.title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ).copyWith(
+                      decoration:
+                          todo.isCompleted ? TextDecoration.lineThrough : null,
+                    )),
                 subtitle: Text(
                     "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
                     style: const TextStyle(fontSize: 18)),
