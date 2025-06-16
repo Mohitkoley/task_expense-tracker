@@ -1,4 +1,5 @@
 import 'package:bloc_test/core/constants/notification_const.dart';
+import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/todo_homepage.dart';
 import 'package:flutter/material.dart';
@@ -107,22 +108,19 @@ class FlutterLocalNotiServices {
     }
   }
 
-  static Future scheduleDailyNotification(DateTime selectedTime) async {
-    if (selectedTime.isBefore(DateTime.now())) {
-      selectedTime = selectedTime.add(const Duration(days: 1));
-    }
+  static Future scheduleTodoNotification(TodoModel todo) async {
     final tz.TZDateTime scheduledTime =
-        tz.TZDateTime.from(selectedTime, tz.local);
+        tz.TZDateTime.from(todo.startDateTime, tz.local);
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-        NotificationConst.intId, // Notification ID
-        NotificationConst.title, // Notification title
-        NotificationConst.body, // Notification body
+        todo.id, // Notification ID
+        todo.title, // Notification title
+        todo.description, // Notification body
         // _nextInstanceOf1130PM(),
         scheduledTime,
         const NotificationDetails(
           android: AndroidNotificationDetails(
-            NotificationConst.id, // Channel ID
-            NotificationConst.title, // Channel name
+            NotificationConst.taskNotificationId, // Channel ID
+            NotificationConst.taskNotificationChanelName, // Channel name
             channelDescription: NotificationConst.channelDescription,
             importance: Importance.high,
             priority: Priority.high,
@@ -140,6 +138,10 @@ class FlutterLocalNotiServices {
         payload: NotificationConst.payload);
   }
 
+  static Future removeScheduleTodoNotification(TodoModel todo) async {
+    await _flutterLocalNotificationsPlugin.cancel(todo.id);
+  }
+
   static tz.TZDateTime _nextInstanceOf1130PM() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     final tz.TZDateTime scheduledTime =
@@ -154,8 +156,8 @@ class FlutterLocalNotiServices {
   static Future showSimpleNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      NotificationConst.id,
-      NotificationConst.title,
+      NotificationConst.taskNotificationId,
+      NotificationConst.taskNotificationChanelName,
       channelDescription: 'Daily reminder notifications',
       importance: Importance.max,
       priority: Priority.high,
@@ -172,7 +174,7 @@ class FlutterLocalNotiServices {
         iOS: iOSPlatformChannelSpecifics);
     await _flutterLocalNotificationsPlugin.show(
       0,
-      NotificationConst.title,
+      NotificationConst.taskNotificationChanelName,
       NotificationConst.body,
       platformChannelSpecifics,
       payload: NotificationConst.payload,

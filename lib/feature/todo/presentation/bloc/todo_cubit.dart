@@ -8,6 +8,7 @@ import 'package:bloc_test/feature/todo/domain/usecase/delete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/filter_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_all_complete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_all_uncomplete_todo.dart';
+import 'package:bloc_test/feature/todo/domain/usecase/get_curent_time_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/update_todo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ part 'todo_state.dart';
 @LazySingleton()
 class TodoCubit extends Cubit<TodoState> {
   TodoCubit(
-      {required AddTodos addExpenses,
+      {required GetCurrentTimetodo currentTimetodo,
+      required AddTodos addExpenses,
       required GetAllUnCompleteTodo getAllUnCompletedTodo,
       required UpdateTodo updateExpenses,
       required DeleteExpense deleteExpense,
@@ -32,6 +34,7 @@ class TodoCubit extends Cubit<TodoState> {
         _filterExpenses = filterExpenses,
         _addExpenses = addExpenses,
         _getCompleteTodo = getAllCompletedTodo,
+        _currentTimetodo = currentTimetodo,
         super(TodoInitial()) {
     // on<TodoEvent>(
     //   getUnCompTodo,
@@ -60,14 +63,16 @@ class TodoCubit extends Cubit<TodoState> {
   final DeleteExpense _deleteExpense;
   final FilterTodo _filterExpenses;
   final AddTodos _addExpenses;
-
+  final GetCurrentTimetodo _currentTimetodo;
   TodoCategory? expenseCategory;
 
   FutureOr<void> getAllTodo() async {
     try {
       final todos = _getUnCompleteTodo(NoParams());
       final todoUnCompleted = _getCompleteTodo(NoParams());
-      emit(TodoLoaded(todos, todoUnCompleted));
+      final todo = _currentTimetodo(NoParams());
+
+      emit(TodoLoaded(todos, todoUnCompleted, todo));
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -94,7 +99,7 @@ class TodoCubit extends Cubit<TodoState> {
         ),
       );
 
-      emit(state as TodoLoaded);
+      getAllTodo();
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -107,7 +112,7 @@ class TodoCubit extends Cubit<TodoState> {
       await _deleteExpense(AddExpensesParams(
         expense: todo,
       ));
-      emit(state as TodoLoaded);
+      getAllTodo();
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -120,7 +125,18 @@ class TodoCubit extends Cubit<TodoState> {
         date: date,
         category: category,
       ));
-      emit(state as TodoLoaded);
+      getAllTodo();
+    } catch (e) {
+      emit(TodoErrorState(e.toString()));
+    }
+  }
+
+  Future<void> removeCurrentTodo() async {
+    try {
+      final todo = await _currentTimetodo(NoParams());
+      if (state is TodoState) {
+        emit((state as TodoLoaded).copyWith(currentTimeModel: null));
+      }
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }
@@ -131,7 +147,7 @@ class TodoCubit extends Cubit<TodoState> {
       await _addExpenses(AddExpensesParams(
         expense: todo,
       ));
-      emit(state as TodoLoaded);
+      getAllTodo();
     } catch (e) {
       debugPrint(e.toString());
       emit(TodoErrorState(e.toString()));

@@ -16,28 +16,31 @@ final class TodoLoading extends TodoState {
 }
 
 final class TodoLoaded extends TodoState {
+  final Stream<TodoModel?> currentTimeTodo;
   final Stream<List<TodoModel>> unCompletedTodo;
   final Stream<List<TodoModel>> completedTodo;
   TodoLoaded(
-      Stream<List<TodoModel>> todoList, Stream<List<TodoModel>> completedTodo)
+      Stream<List<TodoModel>> todoList,
+      Stream<List<TodoModel>> completedTodo,
+      Stream<TodoModel?> currentTimeModel)
       : unCompletedTodo = todoList.asBroadcastStream(),
+        currentTimeTodo = currentTimeModel,
         completedTodo = completedTodo.asBroadcastStream();
 
   @override
   // TODO: implement props
-  List<Object?> get props => [
-        unCompletedTodo,
-        completedTodo,
-      ];
+  List<Object?> get props => [unCompletedTodo, completedTodo, currentTimeTodo];
 
   //copy with
   TodoLoaded copyWith({
     Stream<List<TodoModel>>? unCompletedtodoList,
     Stream<List<TodoModel>>? completedtodoList,
+    Stream<TodoModel?>? currentTimeModel,
   }) {
     return TodoLoaded(
       unCompletedtodoList ?? unCompletedTodo,
       completedtodoList ?? completedTodo,
+      currentTimeModel ?? currentTimeTodo,
     );
   }
 }

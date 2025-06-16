@@ -40,6 +40,23 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
+  Stream<TodoModel?> getCurrentTimeTodo() async* {
+    final now = DateTime.now();
+    try {
+      yield* todos
+          .where()
+          .isCompletedEqualTo(false)
+          .startDateTimeLessThanOrEqualTo(now)
+          .and()
+          .endDateTimeGreaterThanOrEqualTo(now)
+          .watch(fireImmediately: true)
+          .map((todos) => todos.isNotEmpty ? todos.first : null);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<TodoModel>> filterTodos(
       {required DateTime date, required TodoCategory category}) async {
     List<TodoModel> todos = await getUnCompleteTodos().last;
@@ -66,7 +83,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
           .isCompletedEqualTo(false)
           .startDateTimeBetween(
             DateTime.now().subtract(const Duration(days: 1)),
-            DateTime.now(),
+            _startOfTomorrow(),
           )
           .watch(fireImmediately: true);
 

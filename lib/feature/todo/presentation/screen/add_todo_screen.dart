@@ -13,9 +13,11 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 class AddOrUpdateTodoScreen extends StatefulWidget {
   static late BuildContext openContext;
   final TodoModel? todoModel;
-  final int? index;
 
-  const AddOrUpdateTodoScreen({super.key, this.todoModel, this.index});
+  const AddOrUpdateTodoScreen({
+    super.key,
+    this.todoModel,
+  });
 
   @override
   State<AddOrUpdateTodoScreen> createState() => _AddOrUpdateTodoScreenState();

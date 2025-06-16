@@ -26,7 +26,8 @@ class _TodoHomepageState extends State<TodoHomepage>
 
     await Navigator.push(
       context,
-      MaterialPageRoute<void>(builder: (context) => AddOrUpdateTodoScreen()),
+      MaterialPageRoute<void>(
+          builder: (context) => const AddOrUpdateTodoScreen()),
     );
   }
 
@@ -96,6 +97,77 @@ class _TodoHomepageState extends State<TodoHomepage>
             final currentState = state as TodoLoaded;
             return Column(
               children: [
+                StreamBuilder(
+                    stream: currentState.currentTimeTodo,
+                    builder: (context, snap) {
+                      if (snap.data != null) {
+                        final todo = snap.data!;
+                        return Column(children: [
+                          SizedBox(
+                            width: context.w,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.all(10).copyWith(bottom: 5),
+                              child: const Text(
+                                "Current Todo",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              // Update expense
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    // Navigate to add expense page
+                                    return AddOrUpdateTodoScreen(
+                                      todoModel: todo,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            title: Text(todo.title,
+                                style: const TextStyle(fontSize: 20)),
+                            subtitle: Text(
+                                "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
+                                style: const TextStyle(fontSize: 16)),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Transform.scale(
+                                  scale: 2,
+                                  child: Checkbox.adaptive(
+                                    value: todo.isCompleted,
+                                    onChanged: (value) {
+                                      context.read<TodoCubit>().updateTodo(
+                                            todo.copyWith(
+                                              isCompleted: value,
+                                            ),
+                                          );
+                                    },
+                                  ),
+                                ),
+                                // IconButton(
+                                //   icon: const Icon(Icons.delete),
+                                //   onPressed: () {
+                                //     // Delete expense
+                                //     context
+                                //         .read<TodoCubit>()
+                                //         .deleteTodo(currentState.currentTimeTodo!);
+                                //   },
+                                // ),
+                              ],
+                            ),
+                          )
+                        ]);
+                      }
+                      return const SizedBox();
+                    }),
+                // else
+                //   const Text("No current Task"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TabBar(
@@ -226,15 +298,15 @@ class TodoListWidget extends StatelessWidget {
                         // Navigate to add expense page
                         return AddOrUpdateTodoScreen(
                           todoModel: todo,
-                          index: index,
                         );
                       },
                     ),
                   );
                 },
-                title: Text(todo.title),
+                title: Text(todo.title, style: const TextStyle(fontSize: 20)),
                 subtitle: Text(
-                    "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}"),
+                    "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
+                    style: const TextStyle(fontSize: 18)),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

@@ -10,4 +10,5 @@ abstract interface class TodoRepo {
     required DateTime dateTime,
     required TodoCategory category,
   });
+  Stream<TodoEntity?> getCurrentTimeTodo();
 }

@@ -1,3 +1,4 @@
+import 'package:bloc_test/core/service/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
@@ -12,22 +13,24 @@ class ExpensesRepoImpl implements TodoRepo {
 
   @override
   Future<List<TodoEntity>> addTodo(TodoEntity todoEntity) {
+    var todoModel = TodoModel(
+      kEndDateTime: todoEntity.endDateTime,
+      id: todoEntity.ID,
+      kTitle: todoEntity.title,
+      kCategory: todoEntity.category,
+      kStartDateTime: todoEntity.startDateTime,
+      kIsCompleted: todoEntity.isCompleted,
+      kDescription: todoEntity.description,
+    );
+    FlutterLocalNotiServices.scheduleTodoNotification(todoModel);
     return dataSource.addTodos(
-      TodoModel(
-        kEndDateTime: todoEntity.endDateTime,
-        id: todoEntity.ID,
-        kTitle: todoEntity.title,
-        kCategory: todoEntity.category,
-        kStartDateTime: todoEntity.startDateTime,
-        kIsCompleted: todoEntity.isCompleted,
-        kDescription: todoEntity.description,
-      ),
+      todoModel,
     );
   }
 
   @override
   Future<List<TodoEntity>> deleteTodo(TodoEntity todoEntity) {
-    return dataSource.deleteTodos(TodoModel(
+    var todoModel = TodoModel(
       id: todoEntity.ID,
       kEndDateTime: todoEntity.endDateTime,
       kTitle: todoEntity.title,
@@ -35,7 +38,9 @@ class ExpensesRepoImpl implements TodoRepo {
       kStartDateTime: todoEntity.startDateTime,
       kIsCompleted: todoEntity.isCompleted,
       kDescription: todoEntity.description,
-    ));
+    );
+    FlutterLocalNotiServices.removeScheduleTodoNotification(todoModel);
+    return dataSource.deleteTodos(todoModel);
   }
 
   @override
@@ -51,21 +56,26 @@ class ExpensesRepoImpl implements TodoRepo {
 
   @override
   Future<List<TodoEntity>> updateTodo(TodoEntity expenseEntity) {
-    return dataSource.updateTodos(
-      TodoModel(
-        kEndDateTime: expenseEntity.endDateTime,
-        id: expenseEntity.ID,
-        kTitle: expenseEntity.title,
-        kCategory: expenseEntity.category,
-        kStartDateTime: expenseEntity.startDateTime,
-        kIsCompleted: expenseEntity.isCompleted,
-        kDescription: expenseEntity.description,
-      ),
+    final todo = TodoModel(
+      kEndDateTime: expenseEntity.endDateTime,
+      id: expenseEntity.ID,
+      kTitle: expenseEntity.title,
+      kCategory: expenseEntity.category,
+      kStartDateTime: expenseEntity.startDateTime,
+      kIsCompleted: expenseEntity.isCompleted,
+      kDescription: expenseEntity.description,
     );
+    FlutterLocalNotiServices.scheduleTodoNotification(todo);
+    return dataSource.updateTodos(todo);
   }
 
   @override
   Stream<List<TodoEntity>> getAllComplete() {
     return dataSource.getCompleteTodos();
+  }
+
+  @override
+  Stream<TodoEntity?> getCurrentTimeTodo() {
+    return dataSource.getCurrentTimeTodo();
   }
 }
