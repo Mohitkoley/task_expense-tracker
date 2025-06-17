@@ -133,10 +133,8 @@ class TodoCubit extends Cubit<TodoState> {
 
   Future<void> removeCurrentTodo() async {
     try {
-      final todo = await _currentTimetodo(NoParams());
-      if (state is TodoState) {
-        emit((state as TodoLoaded).copyWith(currentTimeModel: null));
-      }
+      // remove <Todo> from current stream
+      final currentState = state as TodoLoaded;
     } catch (e) {
       emit(TodoErrorState(e.toString()));
     }

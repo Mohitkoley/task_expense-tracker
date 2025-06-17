@@ -89,7 +89,6 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
               const SizedBox(height: 16),
 
               TextFormField(
-                keyboardType: TextInputType.number,
                 controller: _titleController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

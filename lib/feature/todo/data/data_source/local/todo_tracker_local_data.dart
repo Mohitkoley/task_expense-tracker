@@ -4,6 +4,7 @@ import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: TodoDataSource)
 class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
@@ -43,14 +44,29 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   Stream<TodoModel?> getCurrentTimeTodo() {
     final now = DateTime.now();
     try {
-      return todos
-          .where()
-          .isCompletedEqualTo(false)
-          .startDateTimeLessThanOrEqualTo(now)
-          .and()
-          .endDateTimeGreaterThanOrEqualTo(now)
-          .watch(fireImmediately: true)
-          .map((todos) => todos.isNotEmpty ? todos.first : null);
+      // Emits every 5 seconds
+      final timerStream =
+          Stream.periodic(const Duration(seconds: 5), (_) => DateTime.now());
+
+      // Emits when any todo changes
+      final dataStream = todos.watchLazy(fireImmediately: true);
+
+      // Combine both: either time changes OR data changes
+      return Rx.combineLatest2(
+              timerStream, dataStream, (_, __) => DateTime.now())
+          .asyncMap((_) async {
+        final now = DateTime.now();
+
+        final todo = todos
+            .where()
+            .isCompletedEqualTo(false)
+            .startDateTimeLessThanOrEqualTo(now)
+            .endDateTimeGreaterThanOrEqualTo(now)
+            .build()
+            .findFirst();
+
+        return todo;
+      });
     } on Exception {
       rethrow;
     }
@@ -85,6 +101,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
             DateTime.now().subtract(const Duration(days: 1)),
             _startOfTomorrow(),
           )
+          .build()
           .watch(fireImmediately: true);
 
       return allTodos;
@@ -108,8 +125,11 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   @override
   Stream<List<TodoModel>> getCompleteTodos() {
     try {
-      final allTodos =
-          todos.where().isCompletedEqualTo(true).watch(fireImmediately: true);
+      final allTodos = todos
+          .where()
+          .isCompletedEqualTo(true)
+          .build()
+          .watch(fireImmediately: true);
       return allTodos;
     } on Exception {
       rethrow;
