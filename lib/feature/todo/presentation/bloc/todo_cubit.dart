@@ -35,7 +35,14 @@ class TodoCubit extends Cubit<TodoState> {
         _addExpenses = addExpenses,
         _getCompleteTodo = getAllCompletedTodo,
         _currentTimetodo = currentTimetodo,
-        super(TodoInitial()) {
+        super(
+          TodoState(
+            const Stream<List<TodoModel>>.empty(),
+            const Stream<List<TodoModel>>.empty(),
+            const Stream<TodoModel?>.empty(),
+            TodoStatus.initial,
+          ),
+        ) {
     // on<TodoEvent>(
     //   getUnCompTodo,
     // );
@@ -72,9 +79,14 @@ class TodoCubit extends Cubit<TodoState> {
       final todoUnCompleted = _getCompleteTodo(NoParams());
       final todo = _currentTimetodo(NoParams());
 
-      emit(TodoLoaded(todos, todoUnCompleted, todo));
+      emit(state.copyWith(
+        unCompletedtodoList: todos,
+        completedtodoList: todoUnCompleted,
+        currentTimeModel: todo,
+        status: TodoStatus.loaded,
+      ));
     } catch (e) {
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 
@@ -101,7 +113,7 @@ class TodoCubit extends Cubit<TodoState> {
 
       // getAllTodo();
     } catch (e) {
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 
@@ -114,7 +126,7 @@ class TodoCubit extends Cubit<TodoState> {
       ));
       // getAllTodo();
     } catch (e) {
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 
@@ -127,16 +139,16 @@ class TodoCubit extends Cubit<TodoState> {
       ));
       getAllTodo();
     } catch (e) {
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 
   Future<void> removeCurrentTodo() async {
     try {
       // remove <Todo> from current stream
-      final currentState = state as TodoLoaded;
+      final currentState = state as TodoState;
     } catch (e) {
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 
@@ -148,7 +160,7 @@ class TodoCubit extends Cubit<TodoState> {
       getAllTodo();
     } catch (e) {
       debugPrint(e.toString());
-      emit(TodoErrorState(e.toString()));
+      emit(state.copyWith(status: TodoStatus.error));
     }
   }
 }
