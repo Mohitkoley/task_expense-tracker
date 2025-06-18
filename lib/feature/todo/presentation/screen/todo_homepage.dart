@@ -322,7 +322,6 @@ class _EditPopUpState extends State<EditPopUp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startTimeEditingController = TextEditingController.fromValue(
         TextEditingValue(text: widget.todo.startDateTime.time2));
