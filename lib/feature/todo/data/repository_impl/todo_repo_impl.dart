@@ -5,6 +5,7 @@ import 'package:bloc_test/feature/todo/data/model/weekly_todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/domain/entity/weekly_todo.dart';
 import 'package:bloc_test/feature/todo/domain/repository/todo_repo.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: TodoRepo)
@@ -77,7 +78,7 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Stream<TodoEntity?> getCurrentTimeTodo() {
+  Stream<Either<TodoEntity?, TodoModel?>> getCurrentTimeTodo() {
     return dataSource.getCurrentTimeTodo();
   }
 

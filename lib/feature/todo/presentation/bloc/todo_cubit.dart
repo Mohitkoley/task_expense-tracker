@@ -12,6 +12,7 @@ import 'package:bloc_test/feature/todo/domain/usecase/get_all_uncomplete_todo.da
 import 'package:bloc_test/feature/todo/domain/usecase/get_curent_time_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_weekly_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/update_todo.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +44,7 @@ class TodoCubit extends Cubit<TodoState> {
           TodoState(
             const Stream<List<TodoModel>>.empty(),
             const Stream<List<TodoModel>>.empty(),
-            const Stream<TodoModel?>.empty(),
+            const Stream<Either<TodoModel?, TodoModel?>>.empty(),
             const Stream<List<WeeklyTodoModel>>.empty(),
             TodoStatus.initial,
           ),

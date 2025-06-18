@@ -2,6 +2,7 @@ import 'package:bloc_test/core/utils/date/date_util.dart';
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
@@ -42,7 +43,7 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
   }
 
   @override
-  Stream<TodoModel?> getCurrentTimeTodo() {
+  Stream<Either<TodoModel?, TodoModel?>> getCurrentTimeTodo() {
     try {
       // Emits every 5 seconds
       final timerStream =
@@ -57,7 +58,8 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
           .asyncMap((_) async {
         final now = DateTime.now();
 
-        final todo = todos
+        // Check for current active todo
+        final currentTodo = todos
             .where()
             .isCompletedEqualTo(false)
             .startDateTimeLessThanOrEqualTo(now)
@@ -65,7 +67,25 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
             .build()
             .findFirst();
 
-        return todo;
+        if (currentTodo != null) {
+          return Either<TodoModel?, TodoModel?>.left(currentTodo);
+        }
+
+        // If no current todo, find next upcoming todo
+        final nextTodo = todos
+            .where()
+            .isCompletedEqualTo(false)
+            .startDateTimeGreaterThan(now)
+            .sortByStartDateTime()
+            .build()
+            .findFirst();
+
+        if (nextTodo != null) {
+          return Either<TodoModel?, TodoModel?>.right(nextTodo);
+        }
+
+        // If no todos found at all
+        return const Either<TodoModel?, TodoModel?>.right(null);
       });
     } on Exception {
       rethrow;

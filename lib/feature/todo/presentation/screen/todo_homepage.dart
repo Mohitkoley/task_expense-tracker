@@ -195,7 +195,7 @@ class WeeklyTodoListView extends StatelessWidget {
                 },
                 separatorBuilder: (context, index) {
                   return const Divider(
-                    height: 10,
+                    height: 30,
                   );
                 },
                 itemCount: week.length);
@@ -538,53 +538,73 @@ class CurrentTodo extends StatelessWidget {
       builder: (context, snap) {
         if (snap.data != null) {
           final todo = snap.data!;
-          return Column(
-            children: [
-              SizedBox(
-                width: context.w,
-                child: Padding(
-                  padding: const EdgeInsets.all(10).copyWith(bottom: 5),
-                  child: const Text(
-                    "Current Todo",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-              ListTile(
-                onTap: () {
-                  // Update expense
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        // Navigate to add expense page
-                        return AddOrUpdateTodoScreen(
-                          todoModel: todo,
-                        );
-                      },
+
+          return todo.fold(ifLeft: (todo) {
+            if (todo != null) {
+              return Column(
+                children: [
+                  SizedBox(
+                    width: context.w,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10).copyWith(bottom: 5),
+                      child: const Text(
+                        "Current Todo",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
-                  );
-                },
-                title: Text(todo.title, style: const TextStyle(fontSize: 20)),
-                subtitle: Text(
-                    "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
-                    style: const TextStyle(fontSize: 16)),
-                leading: Transform.scale(
-                  scale: 2,
-                  child: Checkbox.adaptive(
-                    value: todo.isCompleted,
-                    onChanged: (value) {
-                      context.read<TodoCubit>().updateTodo(
-                            todo.copyWith(
-                              isCompleted: value,
-                            ),
-                          );
+                  ),
+                  ListTile(
+                    onTap: () {
+                      // Update expense
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            // Navigate to add expense page
+                            return AddOrUpdateTodoScreen(
+                              todoModel: todo,
+                            );
+                          },
+                        ),
+                      );
                     },
+                    title:
+                        Text(todo.title, style: const TextStyle(fontSize: 20)),
+                    subtitle: Text(
+                        "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
+                        style: const TextStyle(fontSize: 16)),
+                    leading: Transform.scale(
+                      scale: 2,
+                      child: Checkbox.adaptive(
+                        value: todo.isCompleted,
+                        onChanged: (value) {
+                          context.read<TodoCubit>().updateTodo(
+                                todo.copyWith(
+                                  isCompleted: value,
+                                ),
+                              );
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }
+            return const SizedBox();
+          }, ifRight: (nextTodo) {
+            if (nextTodo != null) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "${nextTodo.title} is at ${nextTodo.startDateTime.time2}",
+                  style: const TextStyle(
+                    fontSize: 20,
                   ),
                 ),
-              )
-            ],
-          );
+              );
+            }
+            return const SizedBox();
+          });
         }
         return const SizedBox();
       },

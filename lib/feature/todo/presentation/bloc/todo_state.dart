@@ -20,7 +20,7 @@ enum TodoStatus {
 }
 
 final class TodoState extends Equatable {
-  final Stream<TodoModel?> currentTimeTodo;
+  final Stream<Either<TodoModel?, TodoModel?>> currentTimeTodo;
   final Stream<List<TodoModel>> unCompletedTodo;
   final Stream<List<TodoModel>> completedTodo;
   final Stream<List<WeeklyTodoModel>> weeklyTodo;
@@ -28,7 +28,7 @@ final class TodoState extends Equatable {
   TodoState(
     Stream<List<TodoModel>> todoList,
     Stream<List<TodoModel>> completedTodo,
-    Stream<TodoModel?> currentTimeModel,
+    Stream<Either<TodoModel?, TodoModel?>> currentTimeModel,
     Stream<List<WeeklyTodoModel>> weeklyTodo,
     this.status,
   )   : unCompletedTodo = todoList.asBroadcastStream(),
@@ -45,7 +45,7 @@ final class TodoState extends Equatable {
   TodoState copyWith({
     Stream<List<TodoModel>>? unCompletedtodoList,
     Stream<List<TodoModel>>? completedtodoList,
-    Stream<TodoModel?>? currentTimeModel,
+    Stream<Either<TodoModel?, TodoModel?>>? currentTimeModel,
     Stream<List<WeeklyTodoModel>>? weeklyTodo,
     TodoStatus? status,
   }) {
