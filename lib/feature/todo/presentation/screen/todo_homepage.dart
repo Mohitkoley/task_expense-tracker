@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/core/extension/context_ext.dart';
-import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/utils/date/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
@@ -139,7 +138,7 @@ class _WeeklyTabState extends State<WeeklyTab>
       key: const PageStorageKey<String>('Tab2'),
       slivers: <Widget>[
         // Instead of SingleChildScrollView, directly put your content as slivers
-        SliverToBoxAdapter(
+        const SliverToBoxAdapter(
           // Use SliverToBoxAdapter for single, non-list widgets
           child: Column(
             // If you need a column, put it inside SliverToBoxAdapter
@@ -151,18 +150,9 @@ class _WeeklyTabState extends State<WeeklyTab>
             ],
           ),
         ),
-        SliverList(
-          // For list-like content, use SliverList
-          delegate: SliverChildListDelegate([
-            Column(
-              children: [
-                WeeklyTodoListView(
-                  weeklyTodo: widget.currentState.weeklyTodo,
-                ),
-              ],
-            )
-          ]),
-        ),
+        WeeklyTodoListView(
+          weeklyTodo: widget.currentState.weeklyTodo,
+        )
       ],
     );
   }
@@ -187,12 +177,14 @@ class WeeklyTodoListView extends StatelessWidget {
         builder: (context, snap) {
           if (snap.data != null) {
             if (snap.data!.isEmpty) {
-              return const Center(
-                child: Text("No todo for this week"),
+              return const SliverFillRemaining(
+                child: Center(
+                  child: Text("No todo for this week"),
+                ),
               );
             }
             final week = snap.data!;
-            return ListView.separated(
+            return SliverList.separated(
                 itemBuilder: (context, index) {
                   return TodoWidget(
                     todo: week[index],
@@ -223,7 +215,7 @@ class WeeklyTodoListView extends StatelessWidget {
           //             )),
           //   );
           // }
-          return const SizedBox();
+          return const SliverFillRemaining(child: SizedBox());
           //return shimmer
         });
   }
@@ -276,30 +268,22 @@ class _TodayTabState extends State<TodayTab>
         SliverToBoxAdapter(
           child: CurrentTodo(currentState: widget.currentState),
         ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Header(
-                    text: "Upcoming",
-                  ),
-                  TodoListWidget(
-                    todoList: widget.currentState.unCompletedTodo,
-                  ),
-                  10.hBox,
-                  const Header(
-                    text: "Completed",
-                  ),
-                  TodoListWidget(
-                    todoList: widget.currentState.completedTodo,
-                  ),
-                ],
-              )
-            ],
+        const SliverToBoxAdapter(
+          child: Header(
+            text: "UnFinised",
           ),
-        )
+        ),
+        TodoListWidget(
+          todoList: widget.currentState.unCompletedTodo,
+        ),
+        const SliverToBoxAdapter(
+          child: Header(
+            text: "Completed",
+          ),
+        ),
+        TodoListWidget(
+          todoList: widget.currentState.completedTodo,
+        ),
       ],
     );
   }
@@ -479,71 +463,85 @@ class TodoListWidget extends StatelessWidget {
         stream: todoList,
         builder: (context, snap) {
           if (snap.data == null || snap.data!.isEmpty) {
-            return SizedBox(
-              height: context.h * 0.2,
-              child: const Center(child: Text("No Todo")),
+            return SliverToBoxAdapter(
+              child: SizedBox(
+                  height: context.h * 0.4,
+                  child: const Center(child: Text("No Todo"))),
             );
           }
           if (snap.hasError) {
-            return const Center(
-              child: Text("Error"),
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: Text("Error"),
+              ),
             );
           }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+          return SliverList.builder(
             itemCount:
                 snap.data!.length, // Replace with the actual number of expenses
             itemBuilder: (context, index) {
               final todo = snap.data![index];
-              return ListTile(
-                leading: Transform.scale(
-                  scale: 1.5,
-                  child: Checkbox.adaptive(
-                    value: todo.isCompleted,
-                    onChanged: (value) {
-                      context.read<TodoCubit>().updateTodo(
-                            todo.copyWith(
-                              isCompleted: value,
-                            ),
-                          );
-                    },
-                  ),
-                ),
-                onTap: () {
-                  // Update expense
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        // Navigate to add expense page
-                        return AddOrUpdateTodoScreen(
-                          todoModel: todo,
-                        );
-                      },
-                    ),
-                  );
-                },
-                title: Text(todo.title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ).copyWith(
-                      decoration:
-                          todo.isCompleted ? TextDecoration.lineThrough : null,
-                    )),
-                subtitle: Text(
-                    "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
-                    style: const TextStyle(fontSize: 18)),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    // Delete expense
-                    context.read<TodoCubit>().deleteTodo(todo);
-                  },
-                ),
-              );
+              return todoListItem(todo: todo);
             },
           );
         });
+  }
+}
+
+class todoListItem extends StatelessWidget {
+  const todoListItem({
+    super.key,
+    required this.todo,
+  });
+
+  final TodoModel todo;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Transform.scale(
+        scale: 1.5,
+        child: Checkbox.adaptive(
+          value: todo.isCompleted,
+          onChanged: (value) {
+            context.read<TodoCubit>().updateTodo(
+                  todo.copyWith(
+                    isCompleted: value,
+                  ),
+                );
+          },
+        ),
+      ),
+      onTap: () {
+        // Update expense
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              // Navigate to add expense page
+              return AddOrUpdateTodoScreen(
+                todoModel: todo,
+              );
+            },
+          ),
+        );
+      },
+      title: Text(todo.title,
+          style: const TextStyle(
+            fontSize: 20,
+          ).copyWith(
+            decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+          )),
+      subtitle: Text(
+          "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
+          style: const TextStyle(fontSize: 18)),
+      trailing: IconButton(
+        icon: const Icon(Icons.delete),
+        onPressed: () {
+          // Delete expense
+          context.read<TodoCubit>().deleteTodo(todo);
+        },
+      ),
+    );
   }
 }
 

@@ -142,7 +142,18 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
     try {
       return todos
           .where()
-          .endDateTimeLessThanOrEqualTo(weekEnd)
+          .startDateTimeGreaterThan(
+            weekStart.copyWith(
+              hour: 0,
+              minute: 0,
+              second: 0,
+              millisecond: 0,
+            ),
+          )
+          .endDateTimeLessThanOrEqualTo(
+            weekEnd.copyWith(
+                hour: 23, minute: 59, second: 59, millisecond: 999),
+          )
           .isCompletedEqualTo(false)
           .build()
           .watch(fireImmediately: true);
