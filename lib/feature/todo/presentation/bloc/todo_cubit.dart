@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_test/core/usecase/usecase.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/data/model/weekly_todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/add_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/delete_todo.dart';
@@ -40,6 +41,7 @@ class TodoCubit extends Cubit<TodoState> {
             const Stream<List<TodoModel>>.empty(),
             const Stream<List<TodoModel>>.empty(),
             const Stream<TodoModel?>.empty(),
+            const Stream<List<WeeklyTodoModel>>.empty(),
             TodoStatus.initial,
           ),
         ) {

@@ -1,4 +1,5 @@
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/domain/entity/weekly_todo.dart';
 
 abstract interface class TodoRepo {
   Stream<List<TodoEntity>> getAllUncomplete();
@@ -11,4 +12,6 @@ abstract interface class TodoRepo {
     required TodoCategory category,
   });
   Stream<TodoEntity?> getCurrentTimeTodo();
+
+  Stream<List<WeeklyTodoEntity>> getWeeklyTodo(DateTime date);
 }

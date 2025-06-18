@@ -10,6 +10,12 @@ abstract interface class UseCaseStream<T, Params> {
 
 class NoParams {}
 
+class GetWeeklyTodoParams {
+  final DateTime date;
+
+  GetWeeklyTodoParams({required this.date});
+}
+
 class AddExpensesParams {
   final TodoEntity expense;
 

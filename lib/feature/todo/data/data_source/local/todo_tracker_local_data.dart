@@ -1,3 +1,4 @@
+import 'package:bloc_test/core/utils/date/date_util.dart';
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
@@ -42,7 +43,6 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
 
   @override
   Stream<TodoModel?> getCurrentTimeTodo() {
-    final now = DateTime.now();
     try {
       // Emits every 5 seconds
       final timerStream =
@@ -132,6 +132,21 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
           .watch(fireImmediately: true);
       return allTodos;
     } on Exception {
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<TodoModel>> getWeeklyTodos(DateTime weekStart) {
+    final weekEnd = DateUtil.get7daysAfter(weekStart);
+    try {
+      return todos
+          .where()
+          .startDateTimeGreaterThan(weekStart)
+          .endDateTimeLessThan(weekEnd)
+          .build()
+          .watch(fireImmediately: true);
+    } catch (e) {
       rethrow;
     }
   }

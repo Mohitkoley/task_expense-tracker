@@ -2,6 +2,7 @@ import 'package:bloc_test/core/service/notification/local_notification_service.d
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/domain/entity/weekly_todo.dart';
 import 'package:bloc_test/feature/todo/domain/repository/todo_repo.dart';
 import 'package:injectable/injectable.dart';
 
@@ -77,5 +78,26 @@ class ExpensesRepoImpl implements TodoRepo {
   @override
   Stream<TodoEntity?> getCurrentTimeTodo() {
     return dataSource.getCurrentTimeTodo();
+  }
+
+  @override
+  Stream<List<WeeklyTodoEntity>> getWeeklyTodo(DateTime date) {
+    Stream<Map<DateTime, List<TodoEntity>>> mappedData = dataSource
+        .getWeeklyTodos(date)
+        .map((todos) => todos.fold<Map<DateTime, List<TodoEntity>>>(
+            {},
+            (map, todo) => {
+                  ...map,
+                  todo.kStartDateTime: [
+                    ...(map[todo.kStartDateTime] ?? []),
+                    todo
+                  ]
+                }));
+    return mappedData.map((event) {
+      return event.entries
+          .map((e) => WeeklyTodoEntity(
+              date: e.key, todos: e.value.map((e) => e).toList()))
+          .toList();
+    });
   }
 }

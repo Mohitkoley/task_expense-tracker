@@ -8,6 +8,7 @@ abstract interface class TodoDataSource {
   Future<List<TodoModel>> updateTodos(TodoModel expenseModel);
   Future<List<TodoModel>> deleteTodos(TodoModel expenseEntity);
   Stream<TodoModel?> getCurrentTimeTodo();
+  Stream<List<TodoModel>> getWeeklyTodos(DateTime date);
 
   Future<List<TodoModel>> filterTodos({
     required DateTime date,

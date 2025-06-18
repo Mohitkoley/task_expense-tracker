@@ -93,4 +93,16 @@ class TodoModel extends TodoEntity {
       kCategory: category ?? kCategory,
     );
   }
+
+  TodoEntity toEntity() {
+    return TodoEntity(
+      ID: id,
+      title: kTitle,
+      startDateTime: kStartDateTime,
+      endDateTime: kEndDateTime,
+      description: kDescription,
+      isCompleted: kIsCompleted,
+      category: kCategory,
+    );
+  }
 }

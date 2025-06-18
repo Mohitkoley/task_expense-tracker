@@ -1,16 +1,14 @@
 class DateUtil {
-  /// Returns the starting date of the week for the given date.
-  ///
-  /// The week starts on Monday and ends on Sunday.
+  /// Returns the date 7 days after the given date.
   ///
   /// Example:
-  /// For a date of 2023-08-15, the starting date of the week would be 2023-08-14.
+  /// For a date of 2023-08-15, the date 7 days after would be 2023-08-22.
   ///
   /// Parameters:
-  /// - `date`: The date for which to find the starting date of the week.
+  /// - `date`: The date for which to find the date 7 days after.
   ///
   /// Returns:
-  /// A `DateTime` object representing the starting date of the week.
-  static DateTime getStarttingOfWeekByCurrentDate(DateTime date) =>
-      date.subtract(Duration(days: date.weekday - 1));
+  /// A `DateTime` object representing the date 7 days after the given date.
+  static DateTime get7daysAfter(DateTime date) =>
+      date.add(const Duration(days: 7));
 }

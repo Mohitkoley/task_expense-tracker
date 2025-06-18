@@ -82,7 +82,7 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Add or Edit Todo',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
