@@ -25,6 +25,7 @@ import '../../feature/todo/domain/usecase/get_all_complete_todo.dart' as _i403;
 import '../../feature/todo/domain/usecase/get_all_uncomplete_todo.dart'
     as _i192;
 import '../../feature/todo/domain/usecase/get_curent_time_todo.dart' as _i1006;
+import '../../feature/todo/domain/usecase/get_weekly_todo.dart' as _i955;
 import '../../feature/todo/domain/usecase/update_todo.dart' as _i1004;
 import '../../feature/todo/presentation/bloc/todo_cubit.dart' as _i135;
 
@@ -50,6 +51,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1006.GetCurrentTimetodo(gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i403.GetAllCompleteTodo>(
         () => _i403.GetAllCompleteTodo(gh<_i969.TodoRepo>()));
+    gh.lazySingleton<_i955.GetAllWeeklyTodo>(
+        () => _i955.GetAllWeeklyTodo(gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i192.GetAllUnCompleteTodo>(
         () => _i192.GetAllUnCompleteTodo(gh<_i969.TodoRepo>()));
     gh.lazySingleton<_i1020.AddTodos>(
@@ -68,6 +71,7 @@ extension GetItInjectableX on _i174.GetIt {
           deleteExpense: gh<_i326.DeleteExpense>(),
           filterExpenses: gh<_i806.FilterTodo>(),
           getAllCompletedTodo: gh<_i403.GetAllCompleteTodo>(),
+          getAllWeeklyTodo: gh<_i955.GetAllWeeklyTodo>(),
         ));
     return this;
   }

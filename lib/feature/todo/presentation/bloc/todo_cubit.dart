@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc_test/core/usecase/usecase.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
-import 'package:bloc_test/feature/todo/data/model/weekly_todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/add_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/delete_todo.dart';
@@ -10,6 +9,7 @@ import 'package:bloc_test/feature/todo/domain/usecase/filter_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_all_complete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_all_uncomplete_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/get_curent_time_todo.dart';
+import 'package:bloc_test/feature/todo/domain/usecase/get_weekly_todo.dart';
 import 'package:bloc_test/feature/todo/domain/usecase/update_todo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -21,27 +21,29 @@ part 'todo_state.dart';
 
 @LazySingleton()
 class TodoCubit extends Cubit<TodoState> {
-  TodoCubit(
-      {required GetCurrentTimetodo currentTimetodo,
-      required AddTodos addExpenses,
-      required GetAllUnCompleteTodo getAllUnCompletedTodo,
-      required UpdateTodo updateExpenses,
-      required DeleteExpense deleteExpense,
-      required FilterTodo filterExpenses,
-      required GetAllCompleteTodo getAllCompletedTodo})
-      : _getUnCompleteTodo = getAllUnCompletedTodo,
+  TodoCubit({
+    required GetCurrentTimetodo currentTimetodo,
+    required AddTodos addExpenses,
+    required GetAllUnCompleteTodo getAllUnCompletedTodo,
+    required UpdateTodo updateExpenses,
+    required DeleteExpense deleteExpense,
+    required FilterTodo filterExpenses,
+    required GetAllCompleteTodo getAllCompletedTodo,
+    required GetAllWeeklyTodo getAllWeeklyTodo,
+  })  : _getUnCompleteTodo = getAllUnCompletedTodo,
         _updateExpenses = updateExpenses,
         _deleteExpense = deleteExpense,
         _filterExpenses = filterExpenses,
         _addExpenses = addExpenses,
         _getCompleteTodo = getAllCompletedTodo,
         _currentTimetodo = currentTimetodo,
+        _getAllWeeklyTodo = getAllWeeklyTodo,
         super(
           TodoState(
             const Stream<List<TodoModel>>.empty(),
             const Stream<List<TodoModel>>.empty(),
             const Stream<TodoModel?>.empty(),
-            const Stream<List<WeeklyTodoModel>>.empty(),
+            const Stream<List<TodoModel>>.empty(),
             TodoStatus.initial,
           ),
         ) {
@@ -73,6 +75,7 @@ class TodoCubit extends Cubit<TodoState> {
   final FilterTodo _filterExpenses;
   final AddTodos _addExpenses;
   final GetCurrentTimetodo _currentTimetodo;
+  final GetAllWeeklyTodo _getAllWeeklyTodo;
   TodoCategory? expenseCategory;
 
   FutureOr<void> getAllTodo() async {
@@ -162,6 +165,20 @@ class TodoCubit extends Cubit<TodoState> {
       getAllTodo();
     } catch (e) {
       debugPrint(e.toString());
+      emit(state.copyWith(status: TodoStatus.error));
+    }
+  }
+
+  void getWeeklyTodo(DateTime date) {
+    try {
+      final todos = _getAllWeeklyTodo(GetWeeklyTodoParams(
+        date: date,
+      ));
+      emit(state.copyWith(
+        weeklyTodo: todos,
+        status: TodoStatus.loaded,
+      ));
+    } catch (e) {
       emit(state.copyWith(status: TodoStatus.error));
     }
   }

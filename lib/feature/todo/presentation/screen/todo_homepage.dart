@@ -39,7 +39,9 @@ class _TodoHomepageState extends State<TodoHomepage>
       //   DateTime.now().add(const Duration(seconds: 10)),
       // );
 
-      context.read<TodoCubit>().getAllTodo();
+      context.read<TodoCubit>()
+        ..getAllTodo()
+        ..getWeeklyTodo(DateTime.now());
     });
   }
 
@@ -143,19 +145,23 @@ class _WeeklyTabState extends State<WeeklyTab>
             // If you need a column, put it inside SliverToBoxAdapter
             children: [
               // Your widgets that were previously inside SingleChildScrollView
-              const Text('Some content at the top'),
-              Container(height: 100, color: Colors.red),
+              Text(
+                "Change date",
+              ),
             ],
           ),
         ),
         SliverList(
           // For list-like content, use SliverList
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return ListTile(title: Text('List Item $index'));
-            },
-            childCount: 50,
-          ),
+          delegate: SliverChildListDelegate([
+            Column(
+              children: [
+                WeeklyTodoListView(
+                  weeklyTodo: widget.currentState.weeklyTodo,
+                ),
+              ],
+            )
+          ]),
         ),
       ],
     );
@@ -164,6 +170,86 @@ class _WeeklyTabState extends State<WeeklyTab>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+}
+
+class WeeklyTodoListView extends StatelessWidget {
+  const WeeklyTodoListView({
+    super.key,
+    required this.weeklyTodo,
+  });
+
+  final Stream<List<TodoModel>> weeklyTodo;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: weeklyTodo,
+        builder: (context, snap) {
+          if (snap.data != null) {
+            if (snap.data!.isEmpty) {
+              return const Center(
+                child: Text("No todo for this week"),
+              );
+            }
+            final week = snap.data!;
+            return ListView.separated(
+                itemBuilder: (context, index) {
+                  return TodoWidget(
+                    todo: week[index],
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                    height: 10,
+                  );
+                },
+                itemCount: week.length);
+          }
+
+          // if ((snap.data ?? []).isEmpty) {
+          //   return Column(
+          //     children: List.generate(
+          //         5,
+          //         (index) => Shimmer(
+          //               color: Colors.grey[300]!,
+          //               child: Container(
+          //                 margin: const EdgeInsets.all(10),
+          //                 height: 60,
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white,
+          //                   borderRadius: BorderRadius.circular(8),
+          //                 ),
+          //               ),
+          //             )),
+          //   );
+          // }
+          return const SizedBox();
+          //return shimmer
+        });
+  }
+}
+
+class TodoWidget extends StatelessWidget {
+  final TodoModel todo;
+  const TodoWidget({
+    super.key,
+    required this.todo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            Text(todo.startDateTime.weekdayName),
+            Text(todo.startDateTime.textWithoutTime),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class TodayTab extends StatefulWidget {

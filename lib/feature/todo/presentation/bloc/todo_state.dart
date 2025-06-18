@@ -23,13 +23,13 @@ final class TodoState extends Equatable {
   final Stream<TodoModel?> currentTimeTodo;
   final Stream<List<TodoModel>> unCompletedTodo;
   final Stream<List<TodoModel>> completedTodo;
-  final Stream<List<WeeklyTodoModel>> weeklyTodo;
+  final Stream<List<TodoModel>> weeklyTodo;
   final TodoStatus status;
   TodoState(
     Stream<List<TodoModel>> todoList,
     Stream<List<TodoModel>> completedTodo,
     Stream<TodoModel?> currentTimeModel,
-    Stream<List<WeeklyTodoModel>> weeklyTodo,
+    Stream<List<TodoModel>> weeklyTodo,
     this.status,
   )   : unCompletedTodo = todoList.asBroadcastStream(),
         currentTimeTodo = currentTimeModel,
@@ -46,7 +46,7 @@ final class TodoState extends Equatable {
     Stream<List<TodoModel>>? unCompletedtodoList,
     Stream<List<TodoModel>>? completedtodoList,
     Stream<TodoModel?>? currentTimeModel,
-    Stream<List<WeeklyTodoModel>>? weeklyTodo,
+    Stream<List<TodoModel>>? weeklyTodo,
     TodoStatus? status,
   }) {
     return TodoState(
