@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/core/utils/common_datetime_format.dart';
+import 'package:bloc_test/core/utils/date/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
@@ -82,7 +82,7 @@ class _TodoHomepageState extends State<TodoHomepage>
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
-                      title: const Text('My App Bar'),
+                      title: const Text('Todo List'),
                       pinned: true, // Keeps the app bar visible at the top
                       floating:
                           true, // Allows the app bar to reappear when scrolling up

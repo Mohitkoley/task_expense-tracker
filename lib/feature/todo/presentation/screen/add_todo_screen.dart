@@ -1,7 +1,7 @@
 import 'package:bloc_test/core/di/di.dart';
 import 'package:bloc_test/core/extension/context_ext.dart';
 import 'package:bloc_test/core/extension/num_ext.dart';
-import 'package:bloc_test/core/utils/common_datetime_format.dart';
+import 'package:bloc_test/core/utils/date/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
