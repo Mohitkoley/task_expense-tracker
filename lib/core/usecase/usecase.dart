@@ -30,7 +30,7 @@ class UpdateTodoIndexParams {
 
 class FilterTodoParams {
   final DateTime date;
-  final TodoCategory category;
+  final Priority category;
 
   FilterTodoParams({required this.date, required this.category});
 }

@@ -74,12 +74,12 @@ class ExpenseTrackerLocalDataSourceImpl implements TodoDataSource {
 
   @override
   Future<List<TodoModel>> filterTodos(
-      {required DateTime date, required TodoCategory category}) async {
+      {required DateTime date, required Priority category}) async {
     List<TodoModel> todos = await getUnCompleteTodos().last;
     try {
       for (int i = 0; i < todos.length; i++) {
         if (DateUtils.isSameDay(todos[i].kStartDateTime, date) ||
-            todos[i].category == category) {
+            todos[i].priority == category) {
           todos.add(todos[i]);
         }
       }

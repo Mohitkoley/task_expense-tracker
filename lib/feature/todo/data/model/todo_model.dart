@@ -13,14 +13,14 @@ class TodoModel extends TodoEntity {
       required this.kEndDateTime,
       this.kDescription,
       this.kIsCompleted = false,
-      required this.kCategory})
+      required this.Kpriority})
       : super(
           ID: id,
           title: kTitle,
           startDateTime: kStartDateTime,
           description: kDescription,
           isCompleted: kIsCompleted,
-          category: kCategory,
+          priority: Kpriority,
           endDateTime: kEndDateTime,
         );
 
@@ -35,8 +35,8 @@ class TodoModel extends TodoEntity {
   final DateTime kEndDateTime;
   @Index(name: 'isCompleted')
   bool kIsCompleted;
-  @Index(name: 'category')
-  final TodoCategory kCategory;
+  @Index(name: 'priority')
+  final Priority Kpriority;
 
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     return TodoModel(
@@ -46,7 +46,7 @@ class TodoModel extends TodoEntity {
       kEndDateTime: DateTime.parse(json['endDateTime']),
       kDescription: json['description'],
       kIsCompleted: json['isCompleted'],
-      kCategory: TodoCategory.fromJson(json['category']),
+      Kpriority: Priority.fromJson(json['priority']),
     );
   }
 
@@ -57,7 +57,7 @@ class TodoModel extends TodoEntity {
       'dateTime': super.startDateTime.toIso8601String(),
       'description': super.description,
       'isCompleted': super.isCompleted,
-      'category': super.category.toJson(),
+      'category': super.priority.toJson(),
     };
   }
 
@@ -68,7 +68,7 @@ class TodoModel extends TodoEntity {
       kTitle: entity.title,
       kStartDateTime: entity.startDateTime,
       kDescription: entity.description,
-      kCategory: entity.category,
+      Kpriority: entity.priority,
       kIsCompleted: entity.isCompleted,
     );
   }
@@ -81,7 +81,7 @@ class TodoModel extends TodoEntity {
     DateTime? startDateTime,
     DateTime? endDateTime,
     String? description,
-    TodoCategory? category,
+    Priority? kpriority,
   }) {
     return TodoModel(
       id: id ?? this.id,
@@ -90,7 +90,7 @@ class TodoModel extends TodoEntity {
       kEndDateTime: endDateTime ?? kEndDateTime,
       kIsCompleted: isCompleted ?? kIsCompleted,
       kDescription: description ?? kDescription,
-      kCategory: category ?? kCategory,
+      Kpriority: priority ?? Kpriority,
     );
   }
 
@@ -102,7 +102,7 @@ class TodoModel extends TodoEntity {
       endDateTime: kEndDateTime,
       description: kDescription,
       isCompleted: kIsCompleted,
-      category: kCategory,
+      priority: Kpriority,
     );
   }
 }

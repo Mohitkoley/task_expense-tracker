@@ -89,7 +89,7 @@ void main() {
         await tester.enterText(find.byType(TextField).first, '100');
 
         // Select category.
-        await tester.tap(find.byType(DropdownButtonFormField<TodoCategory>));
+        await tester.tap(find.byType(DropdownButtonFormField<Priority>));
         // open the dropdown
         await tester.pumpAndSettle();
         // select the first item

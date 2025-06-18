@@ -1,7 +1,9 @@
 import 'package:bloc_test/core/service/notification/local_notification_service.dart';
 import 'package:bloc_test/feature/todo/data/data_source/todo_data_source.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/data/model/weekly_todo_model.dart';
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/domain/entity/weekly_todo.dart';
 import 'package:bloc_test/feature/todo/domain/repository/todo_repo.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,7 +19,7 @@ class ExpensesRepoImpl implements TodoRepo {
       kEndDateTime: todoEntity.endDateTime,
       id: todoEntity.ID,
       kTitle: todoEntity.title,
-      kCategory: todoEntity.category,
+      Kpriority: todoEntity.priority,
       kStartDateTime: todoEntity.startDateTime,
       kIsCompleted: todoEntity.isCompleted,
       kDescription: todoEntity.description,
@@ -34,7 +36,7 @@ class ExpensesRepoImpl implements TodoRepo {
       id: todoEntity.ID,
       kEndDateTime: todoEntity.endDateTime,
       kTitle: todoEntity.title,
-      kCategory: todoEntity.category,
+      Kpriority: todoEntity.priority,
       kStartDateTime: todoEntity.startDateTime,
       kIsCompleted: todoEntity.isCompleted,
       kDescription: todoEntity.description,
@@ -45,7 +47,7 @@ class ExpensesRepoImpl implements TodoRepo {
 
   @override
   Future<List<TodoEntity>> filterTodo(
-      {required DateTime dateTime, TodoCategory category = TodoCategory.food}) {
+      {required DateTime dateTime, Priority category = Priority.low}) {
     return dataSource.filterTodos(date: dateTime, category: category);
   }
 
@@ -60,7 +62,7 @@ class ExpensesRepoImpl implements TodoRepo {
       kEndDateTime: expenseEntity.endDateTime,
       id: expenseEntity.ID,
       kTitle: expenseEntity.title,
-      kCategory: expenseEntity.category,
+      Kpriority: expenseEntity.priority,
       kStartDateTime: expenseEntity.startDateTime,
       kIsCompleted: expenseEntity.isCompleted,
       kDescription: expenseEntity.description,
@@ -80,24 +82,29 @@ class ExpensesRepoImpl implements TodoRepo {
   }
 
   @override
-  Stream<List<TodoEntity>> getWeeklyTodo(DateTime date) {
-    // Stream<Map<DateTime, List<TodoEntity>>> mappedData = dataSource
-    //     .getWeeklyTodos(date)
-    //     .map((todos) => todos.fold<Map<DateTime, List<TodoEntity>>>(
-    //         {},
-    //         (map, todo) => {
-    //               ...map,
-    //               todo.kStartDateTime: [
-    //                 ...(map[todo.kStartDateTime] ?? []),
-    //                 todo
-    //               ]
-    //             }));
-    // return mappedData.map((event) {
-    //   return event.entries
-    //       .map((e) => WeeklyTodoEntity(
-    //           date: e.key, todos: e.value.map((e) => e).toList()))
-    //       .toList();
-    // });
-    return dataSource.getWeeklyTodos(date);
+  Stream<List<WeeklyTodoEntity>> getWeeklyTodo(DateTime date) {
+    Stream<List<TodoModel>> todoStream = dataSource.getWeeklyTodos(date);
+    return todoStream.map((todos) {
+      final Map<DateTime, List<TodoModel>> groupedMap = {};
+
+      for (final todo in todos) {
+        final date = DateTime(todo.startDateTime.year, todo.startDateTime.month,
+            todo.startDateTime.day);
+        groupedMap.putIfAbsent(date, () => []).add(todo);
+      }
+
+      // Sort each day's todos
+      for (final list in groupedMap.values) {
+        list.sort((a, b) => a.startDateTime.compareTo(b.startDateTime));
+      }
+
+      // Convert to list of WeeklyTodoModel and sort by date
+      final weeklyTodos = groupedMap.entries.map((entry) {
+        return WeeklyTodoModel(date: entry.key, todos: entry.value);
+      }).toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
+
+      return weeklyTodos;
+    });
   }
 }

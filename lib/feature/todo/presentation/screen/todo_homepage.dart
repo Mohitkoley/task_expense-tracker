@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:bloc_test/core/extension/context_ext.dart';
+import 'package:bloc_test/core/extension/num_ext.dart';
 import 'package:bloc_test/core/utils/date/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/data/model/todo_model.dart';
+import 'package:bloc_test/feature/todo/data/model/weekly_todo_model.dart';
+import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
 import 'package:flutter/material.dart';
@@ -168,7 +171,7 @@ class WeeklyTodoListView extends StatelessWidget {
     required this.weeklyTodo,
   });
 
-  final Stream<List<TodoModel>> weeklyTodo;
+  final Stream<List<WeeklyTodoModel>> weeklyTodo;
 
   @override
   Widget build(BuildContext context) {
@@ -222,22 +225,250 @@ class WeeklyTodoListView extends StatelessWidget {
 }
 
 class TodoWidget extends StatelessWidget {
-  final TodoModel todo;
+  final WeeklyTodoModel todo;
   const TodoWidget({
     super.key,
     required this.todo,
   });
 
+  final taskStyle = const TextStyle(
+    fontSize: 18,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          children: [
-            Text(todo.startDateTime.weekdayName),
-            Text(todo.startDateTime.textWithoutTime),
-          ],
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 15,
+        right: 15,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(todo.date.weekdayName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+              Text(todo.date.textWithoutTime),
+            ],
+          ),
+          10.wBox,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(todo.todos.length, (index) {
+              final todo = this.todo.todos[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      todo.startDateTime.time24,
+                      style: taskStyle,
+                    ),
+                    20.wBox,
+                    SizedBox(
+                      width: context.w * 0.35,
+                      child: Text(
+                        todo.title,
+                        style: taskStyle,
+                        maxLines: 3,
+                      ),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          // show dialog to edit todo
+
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return EditPopUp(
+                                  todo: todo,
+                                );
+                              });
+                        },
+                        child: const Icon(Icons.edit)),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EditPopUp extends StatefulWidget {
+  EditPopUp({super.key, required TodoEntity todo})
+      : todo = TodoModel.fromEntity(todo);
+  TodoModel todo;
+
+  @override
+  State<EditPopUp> createState() => _EditPopUpState();
+}
+
+class _EditPopUpState extends State<EditPopUp> {
+  TextEditingController startTimeEditingController = TextEditingController();
+  TextEditingController endTimeEditingController = TextEditingController();
+
+  Priority category = Priority.low;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startTimeEditingController = TextEditingController.fromValue(
+        TextEditingValue(text: widget.todo.startDateTime.time2));
+
+    endTimeEditingController = TextEditingController.fromValue(
+        TextEditingValue(text: widget.todo.endDateTime.time2));
+
+    category = widget.todo.priority;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    startTimeEditingController.dispose();
+    endTimeEditingController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit Todo'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            initialValue: widget.todo.title,
+            decoration: const InputDecoration(
+              labelText: 'Title',
+            ),
+            onChanged: (value) {
+              widget.todo = widget.todo.copyWith(title: value);
+              context.read<TodoCubit>().updateTodo(widget.todo);
+            },
+          ),
+          16.hBox,
+          TextFormField(
+            initialValue: widget.todo.description,
+            decoration: const InputDecoration(
+              labelText: 'Description',
+            ),
+            onChanged: (value) {
+              widget.todo = widget.todo.copyWith(description: value);
+              context.read<TodoCubit>().updateTodo(widget.todo);
+            },
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: startTimeEditingController,
+                  decoration: const InputDecoration(
+                    labelText: 'Start Time',
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime:
+                          TimeOfDay.fromDateTime(widget.todo.startDateTime),
+                    );
+                    if (time != null) {
+                      final newDateTime = DateTime(
+                        widget.todo.startDateTime.year,
+                        widget.todo.startDateTime.month,
+                        widget.todo.startDateTime.day,
+                        time.hour,
+                        time.minute,
+                      );
+                      final todo =
+                          widget.todo.copyWith(startDateTime: newDateTime);
+                      startTimeEditingController.text = newDateTime.time24;
+                      widget.todo = todo;
+                      context.read<TodoCubit>().updateTodo(todo);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: TextFormField(
+                  controller: endTimeEditingController,
+                  decoration: const InputDecoration(
+                    labelText: 'End Time',
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime:
+                          TimeOfDay.fromDateTime(widget.todo.endDateTime),
+                    );
+                    if (time != null) {
+                      final newDateTime = DateTime(
+                        widget.todo.endDateTime.year,
+                        widget.todo.endDateTime.month,
+                        widget.todo.endDateTime.day,
+                        time.hour,
+                        time.minute,
+                      );
+
+                      if (newDateTime == widget.todo.startDateTime ||
+                          newDateTime.isBefore(widget.todo.startDateTime)) {
+                        context
+                            .showSnack("start Time and end Time can't be same");
+                      } else {
+                        final todo =
+                            widget.todo.copyWith(endDateTime: newDateTime);
+                        endTimeEditingController.text = newDateTime.time24;
+                        context.read<TodoCubit>().updateTodo(todo);
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          10.hBox,
+          DropdownButtonFormField(
+            validator: (value) {
+              if (value == null) {
+                return 'Please select a category';
+              }
+              return null;
+            },
+            items: Priority.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e.toJson()),
+                    ))
+                .toList(),
+            value: category,
+            onChanged: (Priority? value) {
+              category = value!;
+              widget.todo = widget.todo.copyWith(kpriority: category);
+              context.read<TodoCubit>().updateTodo(widget.todo);
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
         ),
       ],
     );
@@ -362,98 +593,6 @@ class CurrentTodo extends StatelessWidget {
   }
 }
 
-//  CustomScrollView(
-//                     key: const PageStorageKey<String>('Tab1'),
-//                     slivers: [
-//                       SliverList(
-//                         delegate: SliverChildListDelegate(
-//                           [
-//                             StreamBuilder(
-//                               stream: currentState.currentTimeTodo,
-//                               builder: (context, snap) {
-//                                 if (snap.data != null) {
-//                                   final todo = snap.data!;
-//                                   return Column(children: [
-//                                     SizedBox(
-//                                       width: context.w,
-//                                       child: Padding(
-//                                         padding: const EdgeInsets.all(10)
-//                                             .copyWith(bottom: 5),
-//                                         child: const Text(
-//                                           "Current Todo",
-//                                           textAlign: TextAlign.left,
-//                                           style: TextStyle(fontSize: 18),
-//                                         ),
-//                                       ),
-//                                     ),
-//                                     ListTile(
-//                                       onTap: () {
-//                                         // Update expense
-//                                         Navigator.of(context).push(
-//                                           MaterialPageRoute(
-//                                             builder: (context) {
-//                                               // Navigate to add expense page
-//                                               return AddOrUpdateTodoScreen(
-//                                                 todoModel: todo,
-//                                               );
-//                                             },
-//                                           ),
-//                                         );
-//                                       },
-//                                       title: Text(todo.title,
-//                                           style: const TextStyle(fontSize: 20)),
-//                                       subtitle: Text(
-//                                           "${todo.startDateTime.dateTime} - ${todo.endDateTime.time}",
-//                                           style: const TextStyle(fontSize: 16)),
-//                                       leading: Transform.scale(
-//                                         scale: 2,
-//                                         child: Checkbox.adaptive(
-//                                           value: todo.isCompleted,
-//                                           onChanged: (value) {
-//                                             context
-//                                                 .read<TodoCubit>()
-//                                                 .updateTodo(
-//                                                   todo.copyWith(
-//                                                     isCompleted: value,
-//                                                   ),
-//                                                 );
-//                                           },
-//                                         ),
-//                                       ),
-//                                     )
-//                                   ]);
-//                                 }
-//                                 return const SizedBox();
-//                               },
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 const Header(
-//                                   text: "Upcoming",
-//                                 ),
-//                                 TodoListWidget(
-//                                   todoList: currentState.unCompletedTodo,
-//                                 ),
-//                                 10.hBox,
-//                                 const Header(
-//                                   text: "Completed",
-//                                 ),
-//                                 TodoListWidget(
-//                                   todoList: currentState.completedTodo,
-//                                 ),
-//                               ],
-//                             )
-//                           ],
-//                         ),
-//                       )
-//                     ],
-//                   ),
-//                   CustomScrollView(
-//                     key: const PageStorageKey<String>('Tab2'),
-//                     slivers: [],
-//                   ),
-
 class TodoListWidget extends StatelessWidget {
   const TodoListWidget({super.key, required this.todoList});
   final Stream<List<TodoModel>> todoList;
@@ -481,15 +620,15 @@ class TodoListWidget extends StatelessWidget {
                 snap.data!.length, // Replace with the actual number of expenses
             itemBuilder: (context, index) {
               final todo = snap.data![index];
-              return todoListItem(todo: todo);
+              return TodoListItem(todo: todo);
             },
           );
         });
   }
 }
 
-class todoListItem extends StatelessWidget {
-  const todoListItem({
+class TodoListItem extends StatelessWidget {
+  const TodoListItem({
     super.key,
     required this.todo,
   });

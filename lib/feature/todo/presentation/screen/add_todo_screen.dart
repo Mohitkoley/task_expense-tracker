@@ -25,7 +25,7 @@ class AddOrUpdateTodoScreen extends StatefulWidget {
 
 class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
   final TextEditingController _titleController = TextEditingController();
-  TodoCategory category = TodoCategory.food;
+  Priority category = Priority.low;
 
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -49,7 +49,7 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.todoModel != null) {
         _titleController.text = widget.todoModel!.title;
-        category = widget.todoModel!.category;
+        category = widget.todoModel!.priority;
         _descriptionController.text = widget.todoModel!.description ?? "";
         _startDate = widget.todoModel!.startDateTime;
         _endDate = widget.todoModel!.endDateTime;
@@ -118,14 +118,14 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
                   }
                   return null;
                 },
-                items: TodoCategory.values
+                items: Priority.values
                     .map((e) => DropdownMenuItem(
                           value: e,
                           child: Text(e.toJson()),
                         ))
                     .toList(),
                 value: category,
-                onChanged: (TodoCategory? value) {
+                onChanged: (Priority? value) {
                   setState(() {
                     category = value!;
                   });
@@ -214,7 +214,7 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
                       kStartDateTime: _startDate ?? DateTime.now(),
                       kEndDateTime: _endDate ?? DateTime.now(),
                       kDescription: _descriptionController.text.trim(),
-                      kCategory: category,
+                      Kpriority: category,
                     );
 
                     if (widget.todoModel == null) {

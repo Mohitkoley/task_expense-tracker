@@ -41,17 +41,9 @@ const TodoModelSchema = IsarGeneratedSchema(
         type: IsarType.bool,
       ),
       IsarPropertySchema(
-        name: 'kCategory',
+        name: 'Kpriority',
         type: IsarType.byte,
-        enumMap: {
-          "food": 0,
-          "transport": 1,
-          "shopping": 2,
-          "entertainment": 3,
-          "health": 4,
-          "bills": 5,
-          "others": 6
-        },
+        enumMap: {"low": 0, "medium": 1, "high": 2},
       ),
       IsarPropertySchema(
         name: 'ID',
@@ -74,17 +66,9 @@ const TodoModelSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
-        name: 'category',
+        name: 'priority',
         type: IsarType.byte,
-        enumMap: {
-          "food": 0,
-          "transport": 1,
-          "shopping": 2,
-          "entertainment": 3,
-          "health": 4,
-          "bills": 5,
-          "others": 6
-        },
+        enumMap: {"low": 0, "medium": 1, "high": 2},
       ),
       IsarPropertySchema(
         name: 'isCompleted',
@@ -133,9 +117,9 @@ const TodoModelSchema = IsarGeneratedSchema(
         hash: false,
       ),
       IsarIndexSchema(
-        name: 'category',
+        name: 'priority',
         properties: [
-          "kCategory",
+          "Kpriority",
         ],
         unique: false,
         hash: false,
@@ -166,7 +150,7 @@ int serializeTodoModel(IsarWriter writer, TodoModel object) {
   IsarCore.writeLong(
       writer, 4, object.kEndDateTime.toUtc().microsecondsSinceEpoch);
   IsarCore.writeBool(writer, 5, object.kIsCompleted);
-  IsarCore.writeByte(writer, 6, object.kCategory.index);
+  IsarCore.writeByte(writer, 6, object.Kpriority.index);
   IsarCore.writeLong(writer, 7, object.ID);
   IsarCore.writeString(writer, 8, object.title);
   IsarCore.writeLong(
@@ -181,7 +165,7 @@ int serializeTodoModel(IsarWriter writer, TodoModel object) {
       IsarCore.writeString(writer, 11, value);
     }
   }
-  IsarCore.writeByte(writer, 12, object.category.index);
+  IsarCore.writeByte(writer, 12, object.priority.index);
   IsarCore.writeBool(writer, 13, object.isCompleted);
   return object.id;
 }
@@ -218,13 +202,13 @@ TodoModel deserializeTodoModel(IsarReader reader) {
   }
   final bool _kIsCompleted;
   _kIsCompleted = IsarCore.readBool(reader, 5);
-  final TodoCategory _kCategory;
+  final Priority _Kpriority;
   {
     if (IsarCore.readNull(reader, 6)) {
-      _kCategory = TodoCategory.food;
+      _Kpriority = Priority.low;
     } else {
-      _kCategory = _todoModelKCategory[IsarCore.readByte(reader, 6)] ??
-          TodoCategory.food;
+      _Kpriority =
+          _todoModelKpriority[IsarCore.readByte(reader, 6)] ?? Priority.low;
     }
   }
   final object = TodoModel(
@@ -234,7 +218,7 @@ TodoModel deserializeTodoModel(IsarReader reader) {
     kStartDateTime: _kStartDateTime,
     kEndDateTime: _kEndDateTime,
     kIsCompleted: _kIsCompleted,
-    kCategory: _kCategory,
+    Kpriority: _Kpriority,
   );
   object.title = IsarCore.readString(reader, 8) ?? '';
   {
@@ -260,10 +244,10 @@ TodoModel deserializeTodoModel(IsarReader reader) {
   object.description = IsarCore.readString(reader, 11);
   {
     if (IsarCore.readNull(reader, 12)) {
-      object.category = TodoCategory.food;
+      object.priority = Priority.low;
     } else {
-      object.category = _todoModelCategory[IsarCore.readByte(reader, 12)] ??
-          TodoCategory.food;
+      object.priority =
+          _todoModelPriority[IsarCore.readByte(reader, 12)] ?? Priority.low;
     }
   }
   object.isCompleted = IsarCore.readBool(reader, 13);
@@ -304,10 +288,10 @@ dynamic deserializeTodoModelProp(IsarReader reader, int property) {
     case 6:
       {
         if (IsarCore.readNull(reader, 6)) {
-          return TodoCategory.food;
+          return Priority.low;
         } else {
-          return _todoModelKCategory[IsarCore.readByte(reader, 6)] ??
-              TodoCategory.food;
+          return _todoModelKpriority[IsarCore.readByte(reader, 6)] ??
+              Priority.low;
         }
       }
     case 7:
@@ -339,10 +323,10 @@ dynamic deserializeTodoModelProp(IsarReader reader, int property) {
     case 12:
       {
         if (IsarCore.readNull(reader, 12)) {
-          return TodoCategory.food;
+          return Priority.low;
         } else {
-          return _todoModelCategory[IsarCore.readByte(reader, 12)] ??
-              TodoCategory.food;
+          return _todoModelPriority[IsarCore.readByte(reader, 12)] ??
+              Priority.low;
         }
       }
     case 13:
@@ -360,13 +344,13 @@ sealed class _TodoModelUpdate {
     DateTime? kStartDateTime,
     DateTime? kEndDateTime,
     bool? kIsCompleted,
-    TodoCategory? kCategory,
+    Priority? Kpriority,
     int? ID,
     String? title,
     DateTime? startDateTime,
     DateTime? endDateTime,
     String? description,
-    TodoCategory? category,
+    Priority? priority,
     bool? isCompleted,
   });
 }
@@ -384,13 +368,13 @@ class _TodoModelUpdateImpl implements _TodoModelUpdate {
     Object? kStartDateTime = ignore,
     Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
-    Object? kCategory = ignore,
+    Object? Kpriority = ignore,
     Object? ID = ignore,
     Object? title = ignore,
     Object? startDateTime = ignore,
     Object? endDateTime = ignore,
     Object? description = ignore,
-    Object? category = ignore,
+    Object? priority = ignore,
     Object? isCompleted = ignore,
   }) {
     return collection.updateProperties([
@@ -401,13 +385,13 @@ class _TodoModelUpdateImpl implements _TodoModelUpdate {
           if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
           if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
           if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
-          if (kCategory != ignore) 6: kCategory as TodoCategory?,
+          if (Kpriority != ignore) 6: Kpriority as Priority?,
           if (ID != ignore) 7: ID as int?,
           if (title != ignore) 8: title as String?,
           if (startDateTime != ignore) 9: startDateTime as DateTime?,
           if (endDateTime != ignore) 10: endDateTime as DateTime?,
           if (description != ignore) 11: description as String?,
-          if (category != ignore) 12: category as TodoCategory?,
+          if (priority != ignore) 12: priority as Priority?,
           if (isCompleted != ignore) 13: isCompleted as bool?,
         }) >
         0;
@@ -422,13 +406,13 @@ sealed class _TodoModelUpdateAll {
     DateTime? kStartDateTime,
     DateTime? kEndDateTime,
     bool? kIsCompleted,
-    TodoCategory? kCategory,
+    Priority? Kpriority,
     int? ID,
     String? title,
     DateTime? startDateTime,
     DateTime? endDateTime,
     String? description,
-    TodoCategory? category,
+    Priority? priority,
     bool? isCompleted,
   });
 }
@@ -446,13 +430,13 @@ class _TodoModelUpdateAllImpl implements _TodoModelUpdateAll {
     Object? kStartDateTime = ignore,
     Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
-    Object? kCategory = ignore,
+    Object? Kpriority = ignore,
     Object? ID = ignore,
     Object? title = ignore,
     Object? startDateTime = ignore,
     Object? endDateTime = ignore,
     Object? description = ignore,
-    Object? category = ignore,
+    Object? priority = ignore,
     Object? isCompleted = ignore,
   }) {
     return collection.updateProperties(id, {
@@ -461,13 +445,13 @@ class _TodoModelUpdateAllImpl implements _TodoModelUpdateAll {
       if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
       if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
       if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
-      if (kCategory != ignore) 6: kCategory as TodoCategory?,
+      if (Kpriority != ignore) 6: Kpriority as Priority?,
       if (ID != ignore) 7: ID as int?,
       if (title != ignore) 8: title as String?,
       if (startDateTime != ignore) 9: startDateTime as DateTime?,
       if (endDateTime != ignore) 10: endDateTime as DateTime?,
       if (description != ignore) 11: description as String?,
-      if (category != ignore) 12: category as TodoCategory?,
+      if (priority != ignore) 12: priority as Priority?,
       if (isCompleted != ignore) 13: isCompleted as bool?,
     });
   }
@@ -486,13 +470,13 @@ sealed class _TodoModelQueryUpdate {
     DateTime? kStartDateTime,
     DateTime? kEndDateTime,
     bool? kIsCompleted,
-    TodoCategory? kCategory,
+    Priority? Kpriority,
     int? ID,
     String? title,
     DateTime? startDateTime,
     DateTime? endDateTime,
     String? description,
-    TodoCategory? category,
+    Priority? priority,
     bool? isCompleted,
   });
 }
@@ -510,13 +494,13 @@ class _TodoModelQueryUpdateImpl implements _TodoModelQueryUpdate {
     Object? kStartDateTime = ignore,
     Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
-    Object? kCategory = ignore,
+    Object? Kpriority = ignore,
     Object? ID = ignore,
     Object? title = ignore,
     Object? startDateTime = ignore,
     Object? endDateTime = ignore,
     Object? description = ignore,
-    Object? category = ignore,
+    Object? priority = ignore,
     Object? isCompleted = ignore,
   }) {
     return query.updateProperties(limit: limit, {
@@ -525,13 +509,13 @@ class _TodoModelQueryUpdateImpl implements _TodoModelQueryUpdate {
       if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
       if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
       if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
-      if (kCategory != ignore) 6: kCategory as TodoCategory?,
+      if (Kpriority != ignore) 6: Kpriority as Priority?,
       if (ID != ignore) 7: ID as int?,
       if (title != ignore) 8: title as String?,
       if (startDateTime != ignore) 9: startDateTime as DateTime?,
       if (endDateTime != ignore) 10: endDateTime as DateTime?,
       if (description != ignore) 11: description as String?,
-      if (category != ignore) 12: category as TodoCategory?,
+      if (priority != ignore) 12: priority as Priority?,
       if (isCompleted != ignore) 13: isCompleted as bool?,
     });
   }
@@ -557,13 +541,13 @@ class _TodoModelQueryBuilderUpdateImpl implements _TodoModelQueryUpdate {
     Object? kStartDateTime = ignore,
     Object? kEndDateTime = ignore,
     Object? kIsCompleted = ignore,
-    Object? kCategory = ignore,
+    Object? Kpriority = ignore,
     Object? ID = ignore,
     Object? title = ignore,
     Object? startDateTime = ignore,
     Object? endDateTime = ignore,
     Object? description = ignore,
-    Object? category = ignore,
+    Object? priority = ignore,
     Object? isCompleted = ignore,
   }) {
     final q = query.build();
@@ -574,13 +558,13 @@ class _TodoModelQueryBuilderUpdateImpl implements _TodoModelQueryUpdate {
         if (kStartDateTime != ignore) 3: kStartDateTime as DateTime?,
         if (kEndDateTime != ignore) 4: kEndDateTime as DateTime?,
         if (kIsCompleted != ignore) 5: kIsCompleted as bool?,
-        if (kCategory != ignore) 6: kCategory as TodoCategory?,
+        if (Kpriority != ignore) 6: Kpriority as Priority?,
         if (ID != ignore) 7: ID as int?,
         if (title != ignore) 8: title as String?,
         if (startDateTime != ignore) 9: startDateTime as DateTime?,
         if (endDateTime != ignore) 10: endDateTime as DateTime?,
         if (description != ignore) 11: description as String?,
-        if (category != ignore) 12: category as TodoCategory?,
+        if (priority != ignore) 12: priority as Priority?,
         if (isCompleted != ignore) 13: isCompleted as bool?,
       });
     } finally {
@@ -597,23 +581,15 @@ extension TodoModelQueryBuilderUpdate
   _TodoModelQueryUpdate get updateAll => _TodoModelQueryBuilderUpdateImpl(this);
 }
 
-const _todoModelKCategory = {
-  0: TodoCategory.food,
-  1: TodoCategory.transport,
-  2: TodoCategory.shopping,
-  3: TodoCategory.entertainment,
-  4: TodoCategory.health,
-  5: TodoCategory.bills,
-  6: TodoCategory.others,
+const _todoModelKpriority = {
+  0: Priority.low,
+  1: Priority.medium,
+  2: Priority.high,
 };
-const _todoModelCategory = {
-  0: TodoCategory.food,
-  1: TodoCategory.transport,
-  2: TodoCategory.shopping,
-  3: TodoCategory.entertainment,
-  4: TodoCategory.health,
-  5: TodoCategory.bills,
-  6: TodoCategory.others,
+const _todoModelPriority = {
+  0: Priority.low,
+  1: Priority.medium,
+  2: Priority.high,
 };
 
 extension TodoModelQueryFilter
@@ -1249,8 +1225,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kCategoryEqualTo(
-    TodoCategory value,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kpriorityEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1263,8 +1239,8 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kCategoryGreaterThan(
-    TodoCategory value,
+      kpriorityGreaterThan(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1277,8 +1253,8 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kCategoryGreaterThanOrEqualTo(
-    TodoCategory value,
+      kpriorityGreaterThanOrEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1290,8 +1266,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kCategoryLessThan(
-    TodoCategory value,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kpriorityLessThan(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1304,8 +1280,8 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      kCategoryLessThanOrEqualTo(
-    TodoCategory value,
+      kpriorityLessThanOrEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1317,9 +1293,9 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kCategoryBetween(
-    TodoCategory lower,
-    TodoCategory upper,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> kpriorityBetween(
+    Priority lower,
+    Priority upper,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1948,8 +1924,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> categoryEqualTo(
-    TodoCategory value,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> priorityEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1961,8 +1937,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> categoryGreaterThan(
-    TodoCategory value,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> priorityGreaterThan(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1975,8 +1951,8 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      categoryGreaterThanOrEqualTo(
-    TodoCategory value,
+      priorityGreaterThanOrEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1988,8 +1964,8 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> categoryLessThan(
-    TodoCategory value,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> priorityLessThan(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -2002,8 +1978,8 @@ extension TodoModelQueryFilter
   }
 
   QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition>
-      categoryLessThanOrEqualTo(
-    TodoCategory value,
+      priorityLessThanOrEqualTo(
+    Priority value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -2015,9 +1991,9 @@ extension TodoModelQueryFilter
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> categoryBetween(
-    TodoCategory lower,
-    TodoCategory upper,
+  QueryBuilder<TodoModel, TodoModel, QAfterFilterCondition> priorityBetween(
+    Priority lower,
+    Priority upper,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -2138,13 +2114,13 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKpriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByKpriorityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, sort: Sort.desc);
     });
@@ -2228,13 +2204,13 @@ extension TodoModelQuerySortBy on QueryBuilder<TodoModel, TodoModel, QSortBy> {
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(12);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> sortByPriorityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(12, sort: Sort.desc);
     });
@@ -2331,13 +2307,13 @@ extension TodoModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKpriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByKpriorityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, sort: Sort.desc);
     });
@@ -2407,13 +2383,13 @@ extension TodoModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(12);
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByCategoryDesc() {
+  QueryBuilder<TodoModel, TodoModel, QAfterSortBy> thenByPriorityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(12, sort: Sort.desc);
     });
@@ -2467,7 +2443,7 @@ extension TodoModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByKpriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(6);
     });
@@ -2505,7 +2481,7 @@ extension TodoModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByCategory() {
+  QueryBuilder<TodoModel, TodoModel, QAfterDistinct> distinctByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(12);
     });
@@ -2556,7 +2532,7 @@ extension TodoModelQueryProperty1
     });
   }
 
-  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> kCategoryProperty() {
+  QueryBuilder<TodoModel, Priority, QAfterProperty> KpriorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -2592,7 +2568,7 @@ extension TodoModelQueryProperty1
     });
   }
 
-  QueryBuilder<TodoModel, TodoCategory, QAfterProperty> categoryProperty() {
+  QueryBuilder<TodoModel, Priority, QAfterProperty> priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(12);
     });
@@ -2645,8 +2621,7 @@ extension TodoModelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<TodoModel, (R, TodoCategory), QAfterProperty>
-      kCategoryProperty() {
+  QueryBuilder<TodoModel, (R, Priority), QAfterProperty> KpriorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -2683,8 +2658,7 @@ extension TodoModelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<TodoModel, (R, TodoCategory), QAfterProperty>
-      categoryProperty() {
+  QueryBuilder<TodoModel, (R, Priority), QAfterProperty> priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(12);
     });
@@ -2738,8 +2712,7 @@ extension TodoModelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<TodoModel, (R1, R2, TodoCategory), QOperations>
-      kCategoryProperty() {
+  QueryBuilder<TodoModel, (R1, R2, Priority), QOperations> KpriorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -2778,8 +2751,7 @@ extension TodoModelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<TodoModel, (R1, R2, TodoCategory), QOperations>
-      categoryProperty() {
+  QueryBuilder<TodoModel, (R1, R2, Priority), QOperations> priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(12);
     });

@@ -1,4 +1,5 @@
 import 'package:bloc_test/feature/todo/domain/entity/todo.dart';
+import 'package:bloc_test/feature/todo/domain/entity/weekly_todo.dart';
 
 abstract interface class TodoRepo {
   Stream<List<TodoEntity>> getAllUncomplete();
@@ -8,9 +9,9 @@ abstract interface class TodoRepo {
   Future<List<TodoEntity>> deleteTodo(TodoEntity expenseEntity);
   Future<List<TodoEntity>> filterTodo({
     required DateTime dateTime,
-    required TodoCategory category,
+    required Priority category,
   });
   Stream<TodoEntity?> getCurrentTimeTodo();
 
-  Stream<List<TodoEntity>> getWeeklyTodo(DateTime date);
+  Stream<List<WeeklyTodoEntity>> getWeeklyTodo(DateTime date);
 }

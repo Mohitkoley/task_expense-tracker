@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+
 class TodoEntity {
   final int ID;
   String title;
   DateTime startDateTime;
   DateTime endDateTime;
   String? description;
-  TodoCategory category;
+  Priority priority;
   bool isCompleted;
 
   TodoEntity({
@@ -13,20 +15,24 @@ class TodoEntity {
     required this.startDateTime,
     required this.endDateTime,
     this.description,
-    this.category = TodoCategory.food,
+    this.priority = Priority.low,
     this.isCompleted = false,
   });
 }
 
-enum TodoCategory {
-  food,
-  transport,
-  shopping,
-  entertainment,
-  health,
-  bills,
-  others;
+enum Priority {
+  low,
+  medium,
+  high;
 
   String toJson() => name;
-  static TodoCategory fromJson(String json) => values.byName(json);
+  static Priority fromJson(String json) => values.byName(json);
+}
+
+extension PriorityExt on Priority {
+  Color get color => switch (this) {
+        Priority.high => Colors.red,
+        Priority.medium => Colors.orange,
+        Priority.low => Colors.green,
+      };
 }

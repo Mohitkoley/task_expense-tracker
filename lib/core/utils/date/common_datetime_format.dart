@@ -50,6 +50,9 @@ class CommonDatetimeFormat {
   //10:00 AM
   static DateFormat formattedTime2 = DateFormat('hh:mm a');
 
+  //22:00
+  static DateFormat formattedTime24 = DateFormat('HH:mm');
+
   // static DateForm
 
   //weekdays
@@ -91,6 +94,8 @@ extension DateTimeExt on DateTime {
       CommonDatetimeFormat.formattedDateWithoutTime4.format(this);
 
   String get time2 => CommonDatetimeFormat.formattedTime2.format(this);
+
+  String get time24 => CommonDatetimeFormat.formattedTime24.format(this);
 
   String get dateOnly2 => CommonDatetimeFormat.formattedDateOnly.format(this);
 

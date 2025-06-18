@@ -12,6 +12,6 @@ abstract interface class TodoDataSource {
 
   Future<List<TodoModel>> filterTodos({
     required DateTime date,
-    required TodoCategory category,
+    required Priority category,
   });
 }
