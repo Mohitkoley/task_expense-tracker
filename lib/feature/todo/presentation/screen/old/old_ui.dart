@@ -33,6 +33,7 @@ class _OldUIState extends State<OldUI> with SingleTickerProviderStateMixin {
 
   @override
   dispose() {
+    super.dispose();
     tabController.dispose();
   }
 

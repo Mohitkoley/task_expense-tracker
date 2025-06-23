@@ -1,6 +1,7 @@
+import 'package:bloc_test/core/extension/context_ext.dart';
+import 'package:bloc_test/core/utils/date/common_datetime_format.dart';
 import 'package:bloc_test/feature/todo/presentation/bloc/todo_cubit.dart';
 import 'package:bloc_test/feature/todo/presentation/screen/add_todo_screen.dart';
-import 'package:bloc_test/feature/todo/presentation/screen/old/old_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,6 +14,7 @@ class TodoHomepage extends StatefulWidget {
 
 class _TodoHomepageState extends State<TodoHomepage>
     with TickerProviderStateMixin {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   void selectNotification(String? payload) async {
     debugPrint('notification payload: $payload');
 
@@ -42,6 +44,12 @@ class _TodoHomepageState extends State<TodoHomepage>
   Widget build(BuildContext context) {
     TodoHomepage.openContext = context;
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const Drawer(
+        child: Column(
+          children: [],
+        ),
+      ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -66,7 +74,31 @@ class _TodoHomepageState extends State<TodoHomepage>
                 child: CircularProgressIndicator(),
               ),
             TodoStatus.error => const SizedBox(),
-            TodoStatus.loaded => OldUI(currentState: currentState)
+            TodoStatus.loaded => NestedScrollView(
+                headerSliverBuilder: (context, isScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      centerTitle: false,
+                      title: Text(
+                        "Today, ${DateTime.now().monthDate}",
+                        style: context.headlineLarge
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ];
+                },
+                body: CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverToBoxAdapter(
+                        child: TextFormField(),
+                      ),
+                    )
+                  ],
+                ),
+              )
           };
         },
       ),
