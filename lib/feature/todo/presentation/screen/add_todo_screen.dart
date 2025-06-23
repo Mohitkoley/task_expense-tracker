@@ -144,6 +144,7 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
                 if (value == null) {
                   return 'Please select a date';
                 }
+
                 return null;
               }, builder: (FormFieldState<DateTime> state) {
                 return ListTile(
@@ -166,33 +167,47 @@ class _AddOrUpdateTodoScreenState extends State<AddOrUpdateTodoScreen> {
                 );
               }),
               16.hBox,
-              ListTile(
-                title: Text(_endDate?.dateTime ?? "Pick Date"),
-                subtitle: const Text("End Time"),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () async {
-                  if (_startDate == null) {
-                    context.showSnack('Please select start date first');
-                    return;
+              FormField<DateTime>(validator: (value) {
+                if (value == null) {
+                  return "Select End Time";
+                }
+
+                if (_startDate != null) {
+                  if (value.isBefore(_startDate!)) {
+                    return 'End Time can\'t be before start time';
                   }
-
-                  final date = await showOmniDateTimePicker(
-                    context: context,
-                    firstDate: DateTime.now(),
-                    initialDate: _endDate,
-                  );
-
-                  if (date != null) {
-                    if (date != _startDate) {
-                      setState(() {
-                        _endDate = date;
-                      });
-                    } else {
-                      context.showSnack('End date must be after start date');
+                }
+                return null;
+              }, builder: (state) {
+                return ListTile(
+                  title: Text(_endDate?.dateTime ?? "Pick Date"),
+                  subtitle: const Text("End Time"),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    if (_startDate == null) {
+                      context.showSnack('Please select start date first');
+                      return;
                     }
-                  }
-                },
-              ),
+
+                    final date = await showOmniDateTimePicker(
+                      context: context,
+                      firstDate: DateTime.now(),
+                      initialDate: _endDate,
+                    );
+
+                    if (date != null) {
+                      if (date != _startDate) {
+                        setState(() {
+                          _endDate = date;
+                          state.didChange(date);
+                        });
+                      } else {
+                        context.showSnack('End date must be after start date');
+                      }
+                    }
+                  },
+                );
+              }),
 
               16.hBox,
 
